@@ -37,7 +37,7 @@ class Receita:
         self. medicacao = medicacao
     
     def __str__(self):
-        s = '{}\n{}:\n'.format(self.data, self.proficional)
+        s = '{}\n{}\n'.format(self.data, self.proficional)
         for m in self.medicacao:
             s += '{}\n'.format(m)
         return s
@@ -79,7 +79,7 @@ class Consulta:
         self.exame = exame
     
     def __str__(self):
-        return '{} {} {}'.format(self.data, self.proficional, self.local)
+        return '{} | {} | {}'.format(self.data, self.proficional, self.local)
 
 class Paciente:
     peso = {}
@@ -134,8 +134,11 @@ def main():
     paciente.add_consulta(consulta)
     
     for k in paciente.consultas.keys():
+        print('Consulta:')
         print(paciente.consultas[k])
+        print('\nReceita:')
         print(paciente.consultas[k].receita)
+        print('Diagnostico:', paciente.consultas[k].diagnostico)
 
 main()
 
