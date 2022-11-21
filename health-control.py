@@ -319,9 +319,20 @@ def main():
             Consulta.register()
         elif inp == '8':
             Paciente.register()
+
+def open_json(name):
+    f = open(name)
+    data = json.load(f)
+    print(data)
+    f.close()
+
+open_json('data.json')
+
 #main()
-json_model()
+#json_model()
 #use_case()
+
+
 
 # Falta:
 # Fazer fuções de registro
