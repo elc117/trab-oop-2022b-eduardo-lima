@@ -1,1 +1,1 @@
-[ : 'Eduardo Lima'}]
+{"pacientes": {"0": {"nome": "Eduardo Machado de Lima", "data_nascimento": "1997-08-13", "peso": {"0": {"data": "2022-11-21", "valor": 70.0}}, "altura": {"0": {"data": "2022-11-21", "valor": 1.73}}, "consultas": {}}, "1": {"nome": "Augusto Morcelli", "data_nascimento": "1998-05-10", "peso": {"0": {"data": "2022-11-21", "valor": 70.0}}, "altura": {"0": {"data": "2022-11-21", "valor": 1.73}}, "consultas": {}}}}

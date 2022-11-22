@@ -71,7 +71,7 @@ class Receita:
         for k in self.medicacao.keys():
             medicacao[k] = self.medicacao[k].as_dict()
         return {'proficional': self.proficional.as_dict(),
-                'data': self.data,
+                'data': str(self.data),
                 'medicacao': medicacao}
 
     def register():
@@ -102,7 +102,7 @@ class Sintoma:
     
     def as_dict(self):
         return {'nome': self.nome,
-                'data': self.data,
+                'data': str(self.data),
                 'qnt': self.qnt,
                 'un': self.un,
                 'qlt': self.qlt}
@@ -120,7 +120,7 @@ class Doenca:
     
     def as_dict(self):
         return {'nome': self.nome,
-                'data': self.data}
+                'data': str(self.data)}
 
     def register():
         pass
@@ -137,7 +137,7 @@ class Exame:
     def as_dict(self):
         return {'nome': self.nome,
                 'medico': self.medico,
-                'data': self.data}
+                'data': str(self.data)}
 
     def register():
         pass
@@ -162,7 +162,7 @@ class Consulta:
         return {'proficional': self.proficional.as_dict(),
                 'local': self.local,
                 'sintomas': sintomas,
-                'data': self.data,
+                'data': str(self.data),
                 'receita': self.receita.as_dict(),
                 'diagnostico': self.diagnostico.as_dict(),
                 'exame': self.exame.as_dict() if self.exame != None else None}
@@ -189,10 +189,10 @@ class Paciente:
         if altura != None:  self.add_altura(altura)
     
     def add_peso(self, peso: float, data:date = date.today()):
-        self.peso[len(self.peso)] = {'data:': data, 'valor': peso}
+        self.peso[str(len(self.peso))] = {'data': str(data), 'valor': peso}
     
     def add_altura(self, altura, data = date.today()):
-        self.altura[len(self.altura)] = {'data:': data, 'valor': altura}
+        self.altura[len(self.altura)] = {'data': str(data), 'valor': altura}
     
     def add_proficional(self, proficional: Proficional):
         self.proficionais[len(self.proficionais)] = proficional
@@ -208,21 +208,36 @@ class Paciente:
     def add_consulta(self, consulta: Consulta):
         self.consultas[len(self.consultas)] = consulta
     
+    def register():
+        nome = input('Nome: ')
+        data_nsc = date(*map(int, input('Data de nascimento (AAAA/MM/DD): ').split('/')))
+        peso = float(input('Peso: '))
+        altura = float(input('Altura: '))
+        return Paciente(nome, data_nsc, peso, altura)
+
     def as_dict(self):
         consultas = {}
         for k in self.consultas.keys():
             consultas[k] = self.consultas[k].as_dict()
         return {'nome': self.nome,
-                'data_nascimento': self.data_nascimento,
+                'data_nascimento': str(self.data_nascimento),
                 'peso': self.peso,
                 'altura': self.altura,
                 'consultas': consultas}
 
-    def register():
-        pass
+    def from_dict(dct):
+        new = Paciente(dct['nome'], dct['data_nascimento'])
+        for k in dct['peso'].keys():
+            new.add_peso(dct['peso'][k]['valor'], dct['peso'][k]['data'])
+        for k in dct['altura'].keys():
+            new.add_altura(dct['altura'][k]['valor'], dct['altura'][k]['data'])
+        return new
+
 
     def __str__(self):
-        return self.nome
+        
+        return 'Nome: ' + self.nome + '\nData de nascimento: ' + str(self.data_nascimento) + \
+            '\nPeso: ' + str(self.peso[max(self.peso.keys())]['valor']) + '\nAltura: ' + str(self.altura[max(self.altura.keys())]['valor'])
 
 def use_case():
     '''
@@ -252,7 +267,8 @@ def use_case():
     consulta = Consulta(medico, 'Hospital da Brigada', sintomas, data, receita, diagnostico)
 
     paciente.add_consulta(consulta)
-    
+
+    print(paciente)
     for k in paciente.consultas.keys():
         print('Consulta:')
         print(paciente.consultas[k])
@@ -287,53 +303,76 @@ def json_model():
 
     print('Paciente\n', paciente.as_dict())
 
-
-def main():
-    try:
-        js = open('js.json', 'r')
-    except FileNotFoundError:
-        pass
-
-    print('Controle de Saúde:')
-    print('Opções: 1- Acessar; 2- Cadastrar')
-    inp = input('> ')
-    if inp == '1':
-        print('Acessar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
-        inp = input('> ')
-    elif inp == '2':
-        print('Cadastrar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
-        inp = input('> ')
-        if inp == '1':
-            Proficional.register()
-        elif inp == '2':
-            Medicacao.register()
-        elif inp == '3':
-            Receita.register()
-        elif inp == '4':
-            Sintoma.register()
-        elif inp == '5':
-            Doenca.register()
-        elif inp == '6':
-            Exame.register()
-        elif inp == '7':
-            Consulta.register()
-        elif inp == '8':
-            Paciente.register()
-
-def open_json(name):
-    f = open(name)
+def open_json() -> dict:
+    f = open('data.json')
     data = json.load(f)
-    print(data)
+    f.close()
+    return data
+
+def save_json(data: dict):
+    f = open('data.json', 'w')
+    json.dump(data, f)
     f.close()
 
-open_json('data.json')
+def main(): 
+    print('Importando dados...')
+    try:
+        data_json = open_json()
+    except (json.decoder.JSONDecodeError, FileNotFoundError):
+        data_json = {}
+        save_json(data_json)
+    while True:
+        print('\nControle de Saúde:')
+        print('Opções: 1- Acessar; 2- Cadastrar')
+        inp = input('\n> ')
+        if inp == '1': # Acessar
+            print('Acessar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
+            inp = input('\n> ')
+            
+            if inp == '8':
+                if 'pacientes' in data_json.keys():
+                    print('Pacientes:')
+                    for k in data_json['pacientes'].keys():
+                        print(int(k)+1, data_json['pacientes'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    print(Paciente.from_dict(data_json['pacientes'][str(inp)]))
+                else:
+                    print('Não há pacientes cadastrados.')
+                
+        elif inp == '2': # Cadastrar
+            print('Cadastrar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
+            inp = input('\n> ')
+            if inp == '1': # Proficional
+                Proficional.register()
+            elif inp == '2': # Medicação
+                Medicacao.register()
+            elif inp == '3': # Receita
+                Receita.register()
+            elif inp == '4': # Sintoma
+                Sintoma.register()
+            elif inp == '5': # Doença
+                Doenca.register()
+            elif inp == '6': # Exame
+                Exame.register()
+            elif inp == '7': # Consulta
+                Consulta.register()
+            elif inp == '8': # Paciente
+                new = Paciente.register()
+                if 'pacientes' in data_json.keys():
+                    data_json['pacientes'][len(data_json.keys())] = new.as_dict()
+                else:
+                    data_json['pacientes'] = {0 : new.as_dict()}
+                save_json(data_json)
 
-#main()
+
+
+main()
 #json_model()
 #use_case()
-
+#open_json('data.json')
 
 
 # Falta:
-# Fazer fuções de registro
-# Abrir e salvar json
+# Funções from_json()
+# Interface
+# Funções register()
