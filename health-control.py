@@ -236,8 +236,11 @@ class Paciente:
 
     def __str__(self):
         
-        return 'Nome: ' + self.nome + '\nData de nascimento: ' + str(self.data_nascimento) + \
-            '\nPeso: ' + str(self.peso[max(self.peso.keys())]['valor']) + '\nAltura: ' + str(self.altura[max(self.altura.keys())]['valor'])
+        return  'Nome: ' + self.nome + \
+                '\nData de nascimento: ' + str(self.data_nascimento) + \
+                '\nPeso: ' + str(self.peso[max(self.peso.keys())]['valor']) + \
+                '\nAltura: ' + str(self.altura[max(self.altura.keys())]['valor']) + \
+                '\nConsultas: ' + str(len(self.consultas))
 
 def use_case():
     '''
@@ -335,7 +338,16 @@ def main():
                     for k in data_json['pacientes'].keys():
                         print(int(k)+1, data_json['pacientes'][k]['nome'])
                     inp = int(input('\n> ')) - 1
-                    print(Paciente.from_dict(data_json['pacientes'][str(inp)]))
+                    p = Paciente.from_dict(data_json['pacientes'][str(inp)])
+                    print(p)
+                    if len(p.consultas) > 0:
+                        print('Ver consultas?')
+                        print('1- Sim 2- Não')
+                        inp = input('\n> ')
+                        if inp == '1':
+                            for k in p.consultas.keys():
+                                print(int(k)+1, p.consultas[k]['data'], p.consultas[k]['proficional'])
+                
                 else:
                     print('Não há pacientes cadastrados.')
                 
@@ -364,8 +376,6 @@ def main():
                     data_json['pacientes'] = {0 : new.as_dict()}
                 save_json(data_json)
 
-
-
 main()
 #json_model()
 #use_case()
@@ -373,6 +383,6 @@ main()
 
 
 # Falta:
-# Funções from_json()
+# Funções from_dict()
 # Interface
 # Funções register()
