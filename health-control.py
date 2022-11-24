@@ -5,17 +5,25 @@ class Proficional:
     def __init__(self, nome: str, especialidade: str, cidade: str, telefone: str = None):
         self.nome = nome
         self.especialidade = especialidade
-        self.telefone = telefone
         self.cidade = cidade
-    
+        self.telefone = telefone
+        
     def as_dict(self):
         return {'nome': self.nome,
                 'especialidade': self.especialidade,
-                'telefone': self.telefone,
-                'cidade': self.cidade}
+                'cidade': self.cidade,
+                'telefone': self.telefone}
+
+    def from_dict(dct):
+        return Proficional(dct['nome'], dct['especialidade'], dct['cidade'], dct['telefone'])
 
     def register():
-        pass
+        nome = input('Nome: ')
+        especialidade = input('Especialidade: ')
+        telefone = input('Telefone: ')
+        telefone = telefone if telefone != '' else None
+        cidade = input('Cidade: ')
+        return Proficional(nome, especialidade, cidade, telefone)
 
     def __str__(self):
         return '{} {}'.format(self.especialidade, self.nome)
@@ -48,20 +56,29 @@ class Medicacao:
                 'duracao': self.duracao,
                 'condicao': self.condicao}
 
+    def from_dict(dct):
+        return Medicacao(dct['nome'], dct['qnt'], dct['un'], dct['intervalo'], dct['duracao'], dct['condicao'])
+
     def register():
-        pass
+        nome = input('Nome: ')
+        qnt = input('Quantidade: ')
+        un = input('Unidade: ')
+        intervalo = input('Intervalo: ')
+        duracao = input('Duração: ')
+        condicao = input('Condição: ')
+        return Medicacao(nome, qnt, un, intervalo, duracao, condicao)
 
     def __str__(self):
-        qnt = '\t{}'.format(self.qnt) if self.qnt != None else ''
-        un = self.un if self.un != None else ''
-        intervalo = '\na cada {} horas'.format(self.intervalo) if self.intervalo != None else ''
-        duracao = 'durante {} dias'.format(self.duracao) if self.duracao != None else ''
-        condicao = '\nquando: {}'.format(self.condicao) if self.condicao != None else ''
+        qnt = '\t{}'.format(self.qnt) if self.qnt != None and self.qnt != '' else ''
+        un = self.un if self.un != None and self.un != '' else ''
+        intervalo = '\na cada {} horas'.format(self.intervalo) if self.intervalo != None and self.intervalo != '' else ''
+        duracao = 'durante {} dias'.format(self.duracao) if self.duracao != None and self.duracao != '' else ''
+        condicao = '\nquando: {}'.format(self.condicao) if self.condicao != None and self.condicao != '' else ''
 
         return '{} {} {} {} {} {}'.format(self.nome, qnt, un, intervalo, duracao, condicao)
 
 class Receita:
-    def __init__(self, proficional: Proficional, data: date, medicacao: dict):
+    def __init__(self, proficional: Proficional, data: date, medicacao: dict = {}):
         self.proficional = proficional
         self.data = data
         self. medicacao = medicacao
@@ -74,11 +91,54 @@ class Receita:
                 'data': str(self.data),
                 'medicacao': medicacao}
 
-    def register():
-        pass
+    def add_medicacao(self, medicacao: Medicacao):
+        self.medicacao[len(self.medicacao)] = medicacao
+
+    def from_dict(dct):
+        new = Receita(dct['proficional'], date(*map(int, dct['data'].split('-'))))
+        for k in dct['medicacao'].keys():
+            new.add_medicacao(Medicacao.from_dict(dct['medicacao'][k]))
+        return new
+    
+    def register(data_json):
+        print('Proficional:')
+        if 'proficionais' in data_json.keys():
+                    print('0 Cadastrar novo')
+                    for k in data_json['proficionais'].keys():
+                        print(int(k)+1, data_json['proficionais'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    if inp > -1:
+                        proficional = Proficional.from_dict(data_json['proficionais'][str(inp)])
+                    else:
+                        proficional = Proficional.register()
+                        data_json['proficionais'][str(len(data_json['proficionais']))] = proficional.as_dict()
+        else:
+            proficional = Proficional.register()
+            data_json['proficionais'] = {'0' : proficional.as_dict()}
+        data = date(*map(int, input('\nData da receita (AAAA/MM/DD): ').split('/')))
+        medicacao = {}
+        print('\nMedicamento(s):')
+        while True:
+            if 'medicamentos' in data_json.keys():
+                    print('0 Cadastrar novo')
+                    for k in data_json['medicamentos'].keys():
+                        print(int(k)+1, data_json['medicamentos'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    if inp > -1:
+                        medicacao[str(len(medicacao))] = Medicacao.from_dict(data_json['medicamentos'][str(inp)])
+                    else:
+                        medicacao[str(len(medicacao))] = Medicacao.register()
+                        data_json['medicamentos'][str(len(data_json['medicamentos']))] = medicacao[str(len(medicacao)-1)].as_dict()
+            else:
+                medicacao[str(len(medicacao))] = Medicacao.register()
+                data_json['medicamentos'] = {'0' : medicacao[str(len(medicacao)-1)].as_dict()}
+            inp = input('\n1- Adicionar mais; 2- Finalizar\n> ')
+            if inp == '2':
+                break
+        return Receita(proficional, data, medicacao), data_json
 
     def __str__(self):
-        s = '{}\n{}\n\n'.format(self.data, self.proficional)
+        s = '{}\n{}\n\n'.format(self.data, str(Proficional.from_dict(self.proficional)))
         for k in self.medicacao.keys():
             s += '- {}\n'.format(self.medicacao[k])
         return s
@@ -107,6 +167,9 @@ class Sintoma:
                 'un': self.un,
                 'qlt': self.qlt}
     
+    def from_dict(dct):
+        return Sintoma(dct['nome'], date(dct['data']), dct['qnt'], dct['un'], dct['qlt'])
+
     def register():
         pass
 
@@ -122,6 +185,9 @@ class Doenca:
         return {'nome': self.nome,
                 'data': str(self.data)}
 
+    def from_dict(dct):
+        return Doenca(dct['nome'], date(dct['data']))
+
     def register():
         pass
 
@@ -129,7 +195,7 @@ class Doenca:
         return self.nome
 
 class Exame:
-    def __init__(self, nome, medico, data=date.today()):
+    def __init__(self, nome: str, medico: Proficional, data=date.today()):
         self.nome = nome
         self.medico = medico
         self.data = data
@@ -138,6 +204,9 @@ class Exame:
         return {'nome': self.nome,
                 'medico': self.medico,
                 'data': str(self.data)}
+
+    def from_dict(dct):
+        return Exame(dct['nome'], dct['medico'], date(dct['data']))
 
     def register():
         pass
@@ -166,6 +235,14 @@ class Consulta:
                 'receita': self.receita.as_dict(),
                 'diagnostico': self.diagnostico.as_dict(),
                 'exame': self.exame.as_dict() if self.exame != None else None}
+
+    def from_dict(dct):
+        sintomas = {}
+        for k in dct['sintomas'].keys():
+            sintomas[k] = dct['sintomas'][k].from_dict()
+        return Consulta(dct['proficional'], dct['local'], sintomas, date(dct['data']), dct['receita'].from_dict(),
+                dct['diagnostico'].from_dict() if dct['diagnostico'].from_dict() != None else None,
+                dct['exame'].from_dict() if dct['exame'].from_dict() != None else None)
 
     def register():
         pass
@@ -207,13 +284,6 @@ class Paciente:
 
     def add_consulta(self, consulta: Consulta):
         self.consultas[len(self.consultas)] = consulta
-    
-    def register():
-        nome = input('Nome: ')
-        data_nsc = date(*map(int, input('Data de nascimento (AAAA/MM/DD): ').split('/')))
-        peso = float(input('Peso: '))
-        altura = float(input('Altura: '))
-        return Paciente(nome, data_nsc, peso, altura)
 
     def as_dict(self):
         consultas = {}
@@ -233,9 +303,14 @@ class Paciente:
             new.add_altura(dct['altura'][k]['valor'], dct['altura'][k]['data'])
         return new
 
+    def register():
+        nome = input('Nome: ')
+        data_nsc = date(*map(int, input('Data de nascimento (AAAA/MM/DD): ').split('/')))
+        peso = float(input('Peso: '))
+        altura = float(input('Altura: '))
+        return Paciente(nome, data_nsc, peso, altura)
 
-    def __str__(self):
-        
+    def __str__(self): 
         return  'Nome: ' + self.nome + \
                 '\nData de nascimento: ' + str(self.data_nascimento) + \
                 '\nPeso: ' + str(self.peso[max(self.peso.keys())]['valor']) + \
@@ -326,13 +401,83 @@ def main():
         save_json(data_json)
     while True:
         print('\nControle de Saúde:')
-        print('Opções: 1- Acessar; 2- Cadastrar')
+        print('Opções: 1- Acessar; 2- Cadastrar; 3- Sair')
         inp = input('\n> ')
         if inp == '1': # Acessar
             print('Acessar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
             inp = input('\n> ')
             
-            if inp == '8':
+            if inp == '1': # Proficional
+                if 'proficionais' in data_json.keys():
+                    print('Proficionais:')
+                    for k in data_json['proficionais'].keys():
+                        print(int(k)+1, data_json['proficionais'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Proficional.from_dict(data_json['proficionais'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há proficionais cadastrados.')
+            elif inp == '2': # Medicamento
+                if 'medicamentos' in data_json.keys():
+                    print('Medicamentos:')
+                    for k in data_json['medicamentos'].keys():
+                        print(int(k)+1, data_json['medicamentos'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Medicacao.from_dict(data_json['medicamentos'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há medicamentos cadastrados.')
+            elif inp == '3': # Receita
+                if 'receitas' in data_json.keys():
+                    print('Receitas:')
+                    for k in data_json['receitas'].keys():
+                        print(int(k)+1, data_json['receitas'][k]['proficional']['nome'], data_json['receitas'][k]['data'])
+                    inp = int(input('\n> ')) - 1
+                    p = Receita.from_dict(data_json['receitas'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há receitas cadastradas.')
+            elif inp == '4': # Sintoma
+                if 'sintomas' in data_json.keys():
+                    print('Sintomas:')
+                    for k in data_json['sintomas'].keys():
+                        print(int(k)+1, data_json['sintomas'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Sintoma.from_dict(data_json['sintomas'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há sintomas cadastrados.')
+            elif inp == '5': # Doenca
+                if 'doencas' in data_json.keys():
+                    print('Doenças:')
+                    for k in data_json['doencas'].keys():
+                        print(int(k)+1, data_json['doencas'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Doenca.from_dict(data_json['doencas'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há doenças cadastradas.')
+            elif inp == '6': # Exame
+                if 'exames' in data_json.keys():
+                    print('Exames:')
+                    for k in data_json['exames'].keys():
+                        print(int(k)+1, data_json['exames'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Exame.from_dict(data_json['exames'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há exames cadastrados.')
+            elif inp == '7': # Consulta
+                if 'consultas' in data_json.keys():
+                    print('Consultas:')
+                    for k in data_json['consultas'].keys():
+                        print(int(k)+1, data_json['consultas'][k]['nome'])
+                    inp = int(input('\n> ')) - 1
+                    p = Consulta.from_dict(data_json['consultas'][str(inp)])
+                    print(p)
+                else:
+                    print('Não há consultas cadastradas.')
+            elif inp == '8': # Paciente
                 if 'pacientes' in data_json.keys():
                     print('Pacientes:')
                     for k in data_json['pacientes'].keys():
@@ -347,42 +492,76 @@ def main():
                         if inp == '1':
                             for k in p.consultas.keys():
                                 print(int(k)+1, p.consultas[k]['data'], p.consultas[k]['proficional'])
-                
                 else:
                     print('Não há pacientes cadastrados.')
-                
+         
         elif inp == '2': # Cadastrar
             print('Cadastrar:\n1- Proficional\n2- Medicação\n3- Receita\n4- Sintoma\n5- Doença\n6- Exame\n7- Consulta\n8- Paciente')
             inp = input('\n> ')
             if inp == '1': # Proficional
-                Proficional.register()
+                new = Proficional.register()
+                if 'proficionais' in data_json.keys():
+                    data_json['proficionais'][str(len(data_json['proficionais'].keys()))] = new.as_dict()
+                else:
+                    data_json['proficionais'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '2': # Medicação
-                Medicacao.register()
+                new = Medicacao.register()
+                if 'medicamentos' in data_json.keys():
+                    data_json['medicamentos'][str(len(data_json['medicamentos'].keys()))] = new.as_dict()
+                else:
+                    data_json['medicamentos'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '3': # Receita
-                Receita.register()
+                new, data_json = Receita.register(data_json)
+                if 'receitas' in data_json.keys():
+                    data_json['receitas'][str(len(data_json['receitas'].keys()))] = new.as_dict()
+                else:
+                    data_json['receitas'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '4': # Sintoma
-                Sintoma.register()
+                new = Sintoma.register()
+                if 'sintomas' in data_json.keys():
+                    data_json['sintomas'][str(len(data_json['sintomas'].keys()))] = new.as_dict()
+                else:
+                    data_json['sintomas'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '5': # Doença
-                Doenca.register()
+                new = Doenca.register()
+                if 'doencas' in data_json.keys():
+                    data_json['doencas'][str(len(data_json['doencas'].keys()))] = new.as_dict()
+                else:
+                    data_json['doencas'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '6': # Exame
-                Exame.register()
+                new = Exame.register()
+                if 'exames' in data_json.keys():
+                    data_json['exames'][str(len(data_json['exames'].keys()))] = new.as_dict()
+                else:
+                    data_json['exames'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '7': # Consulta
-                Consulta.register()
+                new = Consulta.register()
+                if 'consultas' in data_json.keys():
+                    data_json['exames'][str(len(data_json['consultas'].keys()))] = new.as_dict()
+                else:
+                    data_json['consultas'] = {'0' : new.as_dict()}
+                save_json(data_json)
             elif inp == '8': # Paciente
                 new = Paciente.register()
                 if 'pacientes' in data_json.keys():
-                    data_json['pacientes'][len(data_json.keys())] = new.as_dict()
+                    data_json['pacientes'][str(len(data_json['pacientes'].keys()))] = new.as_dict()
                 else:
-                    data_json['pacientes'] = {0 : new.as_dict()}
+                    data_json['pacientes'] = {'0' : new.as_dict()}
                 save_json(data_json)
+
+        elif inp == '3': # Sair
+            break
 
 main()
 #json_model()
 #use_case()
-#open_json('data.json')
-
 
 # Falta:
-# Funções from_dict()
 # Interface
 # Funções register()
