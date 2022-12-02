@@ -283,7 +283,7 @@ class Consulta:
         sintomas = {}
         for k in dct['sintomas'].keys():
             sintomas[k] = Sintoma.from_dict(dct['sintomas'][k])
-        return Consulta(dct['proficional'], dct['local'], sintomas, date(*map(int, dct['data'].split('-'))), Receita.from_dict(dct['receita']),
+        return Consulta(Proficional.from_dict(dct['proficional']), dct['local'], sintomas, date(*map(int, dct['data'].split('-'))), Receita.from_dict(dct['receita']),
                 Doenca.from_dict(dct['diagnostico']) if Doenca.from_dict(dct['diagnostico']) != None else None,
                 Exame.from_dict(dct['exame']) if dct['exame'] != None else None)
 
@@ -623,6 +623,7 @@ def main():
                         if inp == '1':
                             for k in p.consultas.keys():
                                 print(int(k)+1, p.consultas[k]['data'], p.consultas[k]['proficional'])
+                    inp = input('')
                 else:
                     print('Não há pacientes cadastrados.')
          
@@ -697,5 +698,4 @@ main()
 
 # Interface
 
-# Funções register()
-#   Consulta
+# Opções para adicionar ao paciente
