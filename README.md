@@ -3,7 +3,7 @@
 - Aplicação para controle de histórico de medicação, consultas e acompanhamento da saúde individual
 
 ### Problema que a aplicação pretende resolver:
-- Falta de monitoramento da saúde individual e interdisciplinar dos indivíduos
+- Falta de monitoramento da saúde individual e interdisciplinar dos pacientes
 
 ### Características do programa:
 - O programa deve permitir que usuário adicione consultas, remédios, receitas médicas, doenças, exames
