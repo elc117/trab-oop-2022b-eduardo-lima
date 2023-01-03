@@ -1015,26 +1015,26 @@ def choose_medicine(l=None) -> int:
         data = {}
         data['medicines'] = l
 
-    # Verifique se há medicamentos cadastrados
+    # Verifica se há medicamentos cadastrados
     if len(data['medicines']) == 0:
         print("\nNão há medicamentos cadastrados.")
         return None
 
-    # Imprima os medicamentos cadastrados
+    # Imprime os medicamentos cadastrados
     print("\nMedicamentos cadastrados:")
     list_medicines(l)
 
-    # Leia o índice do medicamento a ser excluído
+    # Lê o índice do medicamento escolhido
     option = input("\nEscolha o medicamento: ")
 
-    # Verifique se a opção é válida
+    # Verifica se a opção é válida
     if option.isnumeric() and int(option) > 0 and int(option) <= len(data['medicines']):
         return int(option) - 1
     else:
         print("\nOpção inválida. Tente novamente.")
         return None
 
-def update_medicine(l=None) -> Medicine:
+def update_medicine(l=None) -> list:
     # Código para atualizar um medicamento existente no sistema
     option = choose_medicine(l)
 
@@ -1072,10 +1072,10 @@ def update_medicine(l=None) -> Medicine:
         medicine.update(name, qnt, un, interval, duration, condition)
         print("\nMedicamento atualizado com sucesso!")
         print(medicine)
-        return l
+        return data['medicines']
     else:
         print("\nMedicamento não atualizado.")
-        return l
+        return data['medicines']
 
 def delete_medicine(l=None) -> list[Medicine]:
     # Código para excluir um medicamento existente no sistema
@@ -1203,11 +1203,34 @@ def register_prescription() -> Prescription:
     print("\nReceita cadastrada com sucesso!")
     print(prescription)
 
-def list_prescriptions():
-    # Código para ler os dados do arquivo JSON
-    with open('data.json', 'r') as f:
-        data = json.load(f)
+def list_prescriptions(l=None):
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['prescriptions'] = l
         
+    # Verifica se existem receitas cadastradas
+    if len(data['prescriptions']) == 0:
+        print("\nNão existem receitas cadastradas no sistema.")
+        return
+    
+    # Imprime as receitas cadastradas
+    print("\nReceitas cadastradas:")
+    for i, prescription in enumerate(data['prescriptions']):
+        print(f"{i+1}. {Prescription(prescription['professional'], prescription['patient'], prescription['date'], prescription['medicines'])}")
+    
+def choose_prescription(l=None) -> int:
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['prescriptions'] = l
+    
     # Verifica se existem receitas cadastradas
     if len(data['prescriptions']) == 0:
         print("\nNão existem receitas cadastradas no sistema.")
@@ -1215,38 +1238,31 @@ def list_prescriptions():
     
     # Imprime as receitas cadastradas
     print("\nReceitas cadastradas:")
-    for i, prescription in enumerate(data['prescriptions']):
-        print(f"{i+1}. {Prescription(prescription['professional'], prescription['patient'], prescription['date'], prescription['medicines'])}")
-    
-def choose_prescription():
-    # Código para ler os dados do arquivo JSON
-    with open('data.json', 'r') as f:
-        data = json.load(f)
-    
-    # Verifica se existem receitas cadastradas
-    if len(data['prescriptions']) == 0:
-        print("\nNão existem receitas cadastradas no sistema.")
-        return None
-    
-    # Imprime as receitas cadastradas
-    list_prescriptions()
+    list_prescriptions(l)
 
     # Código para escolher uma receita cadastrada no sistema
     option = input("\nEscolha uma receita: ")
+
+    # Verifica se a opção escolhida é válida
     if option.isnumeric() and int(option) > 0 and int(option) <= len(data['prescriptions']):
         return int(option) - 1
     else:
         print("\nOpção inválida. Tente novamente.")
         return None
 
-def update_prescription():
+def update_prescription(l=None) -> list:
     # Código para atualizar uma receita cadastrada no sistema
-    option = choose_prescription()
+    option = choose_prescription(l)
 
     if option is not None:
-        with open('data.json', 'r') as f:
-            data = json.load(f)
-        
+        if l is None:
+            # Código para ler os dados do arquivo JSON
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['prescriptions'] = l
+
         # Lê os novos dados da receita
         professional = input("Insira o nome do profissional que emitiu a receita (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][option]['professional']))
         if professional == "":
