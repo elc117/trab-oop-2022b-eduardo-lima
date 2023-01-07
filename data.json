@@ -1,1 +1,1 @@
-{"professionals": [], "medicines": [], "perscriptions": [], "symptoms": [], "diseases": [], "exams": [], "consultations": [], "patients": []}
+{"professionals": [{"name": "Eduarda Dalcin Marques", "specialty": "M\u00e9dica", "city": "Santa Maria", "phone": ""}], "medicines": [{"name": "Lisador", "qnt": "1", "un": "cx", "interval": "6", "duration": "5", "condition": "Caso haja dor ou febre"}], "prescriptions": [{"professional": "Eduarda Dalcin Marques", "patient": "Eduardo Machado de Lima", "medicines": "24/10/2022", "date": [
