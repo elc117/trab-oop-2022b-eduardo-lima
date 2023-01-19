@@ -1321,18 +1321,15 @@ def update_prescription(l=None) -> list[Prescription]:
                     if len(medicines) == 0:
                         print("\nNão há medicamentos adicionados.")
                     else:
-                        for medicine in medicines:
-                            print(Medicine(medicine['name'], medicine['qnt'], medicine['un'], medicine['interval'], medicine['duration'], medicine['condition']))        
+                        list_medicines(medicines, "Medicamentos adicionados:")
                 elif option == "4":
                     # Remove um medicamento da receita
                     if len(medicines) == 0:
                         print("\nNão há medicamentos adicionados.")
                     else:
-                        for i, medicine in enumerate(medicines):
-                            print(f"{i+1}. {Medicine(medicine['name'], medicine['qnt'], medicine['un'], medicine['interval'], medicine['duration'], medicine['condition'])}")
-                        option = input("\nEscolha um medicamento: ")
-                        if option.isnumeric() and int(option) > 0 and int(option) <= len(medicines):
-                            medicines.pop(int(option) - 1)
+                        choosed_medicine = choose_medicine(medicines, "Medicamentos adicionados:")
+                        if choosed_medicine is not None:
+                            medicines.pop(choosed_medicine)
                         else:
                             print("\nOpção inválida. Tente novamente.")
                 elif option == "5":
@@ -1340,11 +1337,9 @@ def update_prescription(l=None) -> list[Prescription]:
                     break
                 else:
                     print("\nOpção inválida.")
-        elif confirmation == "n":
-            medicines = None
         else:
-            print("\nOpção inválida. Tente novamente.")
-            return None
+            medicines = None
+        
         
         # Atualiza os dados da receita
         prescription = Prescription(data['prescriptions'][choosed_prescription]['professional'], data['prescriptions'][choosed_prescription]['patient'], data['prescriptions'][choosed_prescription]['medicines'], data['prescriptions'][choosed_prescription]['date'])
@@ -1432,7 +1427,7 @@ def register_symptom(l=None) -> Symptom:
     print(symptom)
     return symptom
 
-def list_symptoms(l=None, string=None) -> int:
+def list_symptoms(l=None, string=None):
     if l is None:
         # Código para ler os dados do arquivo JSON
         with open('data.json', 'r') as f:
@@ -1454,7 +1449,7 @@ def list_symptoms(l=None, string=None) -> int:
     for i, symptom in enumerate(data['symptoms']):
         print(f"{i+1}. {Symptom(symptom['name'], symptom['date'])}")
 
-def choose_symptom(l=None) -> int:
+def choose_symptom(l=None,string="\nSintomas cadastrados:") -> int:
     # Código para escolher um sintoma cadastrado no sistema
     if l is None:
         # Código para ler os dados do arquivo JSON
@@ -1470,8 +1465,7 @@ def choose_symptom(l=None) -> int:
         return None
 
     # Imprime os sintomas cadastrados
-    print("\nSintomas cadastrados:")
-    list_symptoms(l)
+    list_symptoms(data, string)
 
     # Lê o índice do sintoma escolhido
     option = input("\nEscolha um sintoma: ")
@@ -1481,7 +1475,7 @@ def choose_symptom(l=None) -> int:
         return int(option) - 1
     else:
         print("\nOpção inválida. Tente novamente.")
-        return choose_symptom(l)
+        return choose_symptom(l, string)
 
 def update_symptom(l=None) -> list[Symptom]:
     # Código para atualizar um sintoma cadastrado no sistema
@@ -1641,23 +1635,154 @@ def list_diseases(l=None, string="\nDoenças cadastradas:"):
     # Verifica se há doenças cadastradas
     if len(data['diseases']) == 0:
         print("\nNão há doenças cadastradas.")
-        retrun None
-    
+        return None
 
     # Imprime as doenças cadastradas
     print(string)
     for i, disease in enumerate(data['diseases']):
-        print(f"")
-        # Parei aqui
+        print(f"{i+1}. {Disease(disease['name'], disease['symptoms'], disease['date'])}")        
 
-def choose_disease():
-    pass
+def choose_disease(l=None,string="\nDoenças cadastradas:") -> int:
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['diseases'] = l
+    
+    # Verifica se há doenças cadastradas
+    if len(data['diseases']) == 0:
+        print("\nNão há doenças cadastradas.")
+        return None
+    
+    # Imprime as doenças cadastradas
+    list_diseases(data, string)
 
-def update_disease():
-    pass
+    # Lê o indice da doença escolhida
+    choosed_disease = input("\nEscolha uma doença: ")
 
-def delete_disease():
-    pass
+    # Verifica se o indice é válido
+    if choosed_disease.isnumeric() and int(choosed_disease) > 0 and int(choosed_disease) <= len(data['diseases']):
+        return int(choosed_disease) - 1
+    else:
+        print("\nOpção inválida.")
+        return choose_disease(data, string)
+
+def update_disease(l=None) -> list[Disease]:
+    # Código para atualizar uma doença
+    choosed_disese = choose_disease(l)
+
+    if choosed_disese is not None:
+        # Código para ler os dados do arquivo JSON
+        if l is None:
+            # Código para ler os dados do arquivo JSON
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['diseases'] = l
+        
+        # Lê os novos dados da doença escolhida
+        name = input("Insira o nome da doença (deixe em branco para manter o nome atual: {}): ".format(data['diseases'][choosed_disese]['name']))
+        if name == "":
+            name = None
+        confirmation = input("Deseja alterar os sintomas da doença? (s/n): ")
+        if confirmation == "s":
+            symptoms = data['diseases'][choosed_disese]['symptoms']
+            while True:
+                print("\n1. Adicionar sintoma cadstrado")
+                print("2. Cadastrar novo sintoma")
+                print("3. Visualizar sintomas da doença")
+                print("4. Remover sintoma da doença")
+                print("5. Finalizar edição de sintomas")
+            
+                option = input("\nEscolha uma opção: ")
+
+                if option == "1":
+                    # Adiciona um sintoma cadastrado
+                    choosed_symptom = choose_symptom()
+                    if choosed_symptom is not None:
+                        with open('data.json', 'r') as f:
+                            data = json.load(f)
+                        symptoms.append(data['symptoms'][choosed_symptom])
+                        print("\nSintoma adicionado com sucesso!")
+                elif option == "2":
+                    # Cadastra um novo sintoma
+                    register_symptom(symptoms)
+                elif option == "3":
+                    if len(symptoms) == 0:
+                        print("\nNão há sintomas na doença.")
+                    else:
+                        # Visualiza os sintomas da doença
+                        list_symptoms(symptoms, "\nSintomas da doença:")
+                elif option == "4":
+                    # Remove um sintoma da doença
+                    if len(symptoms) == 0:
+                        print("\nNão há sintomas na doença.")
+                    else:
+                        choosed_symptom = choose_symptom(symptoms, "\nSintomas da doença:")
+                        if choosed_symptom is not None:
+                            symptoms.pop(choosed_symptom)
+                            print("\nSintoma removido com sucesso!")
+                        else:
+                            print("\nOpção inválida.")
+                elif option == "5":
+                    # Finaliza a edição dos sintomas
+                    break
+                else:
+                    print("\nOpção inválida.")
+            
+            else:
+                symptoms = None
+
+            date = input("Insira a data da doença (deixe em branco para manter a data atual: {}): ".format(data['diseases'][choosed_disese]['date']))
+            
+            # Atualiza os dados da doença
+            disease = Disease(data['diseases'][choosed_disese]['name'], data['diseases'][choosed_disese]['symptoms'], data['diseases'][choosed_disese]['date'])
+            disease = disease.update(name, symptoms, date)
+
+            data['diseases'][choosed_disese] = disease.__dict__()
+
+            print("\nDoença atualizada com sucesso!")
+            print(disease)
+            return data['diseases']
+        else:
+            print("\nDoença não atualizada.")
+            try:
+                return data['diseases']
+            except:
+                pass
+
+def delete_disease(l=None) -> list[Disease]:
+    # Código para deletar uma doença cadastrada
+    choosed_disease = choose_disease(l)
+
+    if choosed_disease is not None:
+        # Código para ler os dados do arquivo JSON
+        if l is None:
+            # Código para ler os dados do arquivo JSON
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['diseases'] = l
+
+        # Imprime a doença a ser deletada
+        disease = Disease(data['diseases'][choosed_disease]['name'], data['diseases'][choosed_disease]['symptoms'], data['diseases'][choosed_disease]['date'])
+        print(f"Você deseja deletar a doença abaixo?\n{disease}")
+        confirmation = input("Digite 'sim' para confirmar: ")
+        if confirmation != "sim":
+            print("\nDoença não deletada.")
+            return data['diseases']
+
+        # Exclui a doença escolhida
+        disease.delete()
+        if l is not None:
+            data['diseases'].pop(choosed_disease)
+        print("\nDoença deletada com sucesso!")
+        return data['diseases']
+    
 
 # ------ Funçõoes para manipular os dados de exames ------
 def manage_exams():
