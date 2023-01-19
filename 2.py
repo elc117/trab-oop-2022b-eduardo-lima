@@ -217,7 +217,7 @@ class Medicine(Object):
 
 # Classe para representar uma receita
 class Prescription(Object):
-    def __init__(self, professional, patient, medicines, date):
+    def __init__(self, professional: str, patient: str, medicines: list, date: str):
         self.professional = professional
         self.patient = patient
         self.medicines = medicines
@@ -301,8 +301,9 @@ class Prescription(Object):
         }
     
     def __str__(self):
-        s = f'{self.professional}\nPaciente: {self.patient}\n{self.date}'
-        for medicine in self.medicines:
+        s = f'{self.professional}\nPaciente: {self.patient}\n{self.date}\n'
+        for medicine_dict in self.medicines:
+            medicine = Medicine(medicine_dict['name'], medicine_dict['qnt'], medicine_dict['un'], medicine_dict['interval'], medicine_dict['duration'], medicine_dict['condition'])
             s += medicine.__str__() + '\n'
         return s
         
@@ -1014,7 +1015,7 @@ def list_medicines(l=None, string=None):
     # Verifique se há medicamentos cadastrados
     if len(data['medicines']) == 0:
         print("\nNão há medicamentos cadastrados.")
-        return
+        return None
     
     # Imprime as informações de cada medicamento
     if string == None:
@@ -1035,10 +1036,6 @@ def choose_medicine(l=None, string=None) -> int:
 
     # Verifica se há medicamentos cadastrados
     if len(data['medicines']) == 0:
-        if l == None:
-            print("\nNão há medicamentos cadastrados.")
-        else:
-            print("\nNão há medicamentos adicionados.")
         print("\nNão há medicamentos cadastrados.")
         return None
 
@@ -1223,7 +1220,7 @@ def register_prescription() -> Prescription:
             print("\nOpção inválida.")
     
     # Cria um objeto do tipo Prescription e chama a função create
-    prescription = Prescription(professional, patient, date, medicines)
+    prescription = Prescription(professional, patient, medicines, date)
     prescription.create()
     print("\nReceita cadastrada com sucesso!")
     print(prescription)
@@ -1245,7 +1242,7 @@ def list_prescriptions(l=None):
     # Imprime as receitas cadastradas
     print("\nReceitas cadastradas:")
     for i, prescription in enumerate(data['prescriptions']):
-        print(f"{i+1}. {Prescription(prescription['professional'], prescription['patient'], prescription['date'], prescription['medicines'])}")
+        print(f"{i+1}. {Prescription(prescription['professional'], prescription['patient'], prescription['medicines'], prescription['date'])}")
     
 def choose_prescription(l=None) -> int:
     if l is None:
@@ -1277,9 +1274,9 @@ def choose_prescription(l=None) -> int:
 
 def update_prescription(l=None) -> list[Prescription]:
     # Código para atualizar uma receita cadastrada no sistema
-    option = choose_prescription(l)
+    choosed_prescription = choose_prescription(l)
 
-    if option is not None:
+    if choosed_prescription is not None:
         if l is None:
             # Código para ler os dados do arquivo JSON
             with open('data.json', 'r') as f:
@@ -1289,18 +1286,18 @@ def update_prescription(l=None) -> list[Prescription]:
             data['prescriptions'] = l
 
         # Lê os novos dados da receita
-        professional = input("Insira o nome do profissional que emitiu a receita (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][option]['professional']))
+        professional = input("Insira o nome do profissional que emitiu a receita (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_prescription]['professional']))
         if professional == "":
             professional = None
-        patient = input("Insira o nome do paciente (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][option]['patient']))
+        patient = input("Insira o nome do paciente (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_prescription]['patient']))
         if patient == "":
             patient = None
-        date = input("Insira a data da receita (dd/mm/aaaa) (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][option]['date']))
+        date = input("Insira a data da receita (dd/mm/aaaa) (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_prescription]['date']))
         if date == "":
             date = None
-        option = input("Deseja alterar os medicamentos da receita? (s/n): ")
-        if option == "s":
-            medicines = data['prescriptions'][option]['medicines']
+        confirmation = input("Deseja alterar os medicamentos da receita? (s/n): ")
+        if confirmation == "s":
+            medicines = data['prescriptions'][choosed_prescription]['medicines']
             while True:
                 print("\n1. Adicionar medicamento cadastrado")
                 print("2. Cadastrar novo medicamento")
@@ -1312,12 +1309,13 @@ def update_prescription(l=None) -> list[Prescription]:
 
                 if option == "1":
                     # Adiciona um medicamento cadastrado
-                    option = choose_medicine()
-                    if option is not None:
+                    choosed_medicine = choose_medicine()
+                    if choosed_medicine is not None:
                         with open('data.json', 'r') as f:
                             data = json.load(f)
-                        medicine = {'name': data['medicines'][option]['name'], 'qnt': data['medicines'][option]['qnt'], 'un': data['medicines'][option]['un'], 'interval': data['medicines'][option]['interval'], 'duration': data['medicines'][option]['duration'], 'condition': data['medicines'][option]['condition']}
+                        medicine = {'name': data['medicines'][choosed_medicine]['name'], 'qnt': data['medicines'][choosed_medicine]['qnt'], 'un': data['medicines'][choosed_medicine]['un'], 'interval': data['medicines'][choosed_medicine]['interval'], 'duration': data['medicines'][choosed_medicine]['duration'], 'condition': data['medicines'][choosed_medicine]['condition']}
                         medicines.append(medicine)
+                        print("\nMedicamento adicionado com sucesso!")
                 elif option == "2":
                     # Cadastra um novo medicamento
                     register_medicine()
@@ -1345,24 +1343,27 @@ def update_prescription(l=None) -> list[Prescription]:
                     break
                 else:
                     print("\nOpção inválida.")
-        elif option == "n":
+        elif confirmation == "n":
             medicines = None
         else:
             print("\nOpção inválida. Tente novamente.")
             return None
         
         # Atualiza os dados da receita
-        prescription = Prescription(data['prescriptions'][option]['professional'], data['prescriptions'][option]['patient'], data['prescriptions'][option]['date'], data['prescriptions'][option]['medicines'])
-        prescription = prescription.update(professional, patient, date, medicines)
+        prescription = Prescription(data['prescriptions'][choosed_prescription]['professional'], data['prescriptions'][choosed_prescription]['patient'], data['prescriptions'][choosed_prescription]['medicines'], data['prescriptions'][choosed_prescription]['date'])
+        prescription = prescription.update(professional, patient, medicines, date)
         
-        data['prescriptions'][option] = prescription.__dict__()
+        data['prescriptions'][choosed_prescription] = prescription.__dict__()
 
         print("\nReceita atualizada com sucesso.")
         print(prescription)
         return data['medicines']
     else:
         print("\nReceita não atualizada.")
-        return data['medicines']
+        try:
+            return data['medicines']
+        except:
+            pass
 
 def delete_prescription(l=None) -> list[Prescription]:
     # Código para deletar uma receita cadastrada no sistema
@@ -1378,7 +1379,7 @@ def delete_prescription(l=None) -> list[Prescription]:
             data['prescriptions'] = l
         
         # Imprime a receita a ser deletada
-        prescription = Prescription(data['prescriptions'][option]['professional'], data['prescriptions'][option]['patient'], data['prescriptions'][option]['date'], data['prescriptions'][option]['medicines'])
+        prescription = Prescription(data['prescriptions'][option]['professional'], data['prescriptions'][option]['patient'], data['prescriptions'][option]['medicines'], data['prescriptions'][option]['date'])
         print(f"Você deseja deletar a receita abaixo?\n{prescription}")
         confirm = input("Digite 'sim' para confirmar: ")
         if confirm != "sim":
@@ -1434,8 +1435,7 @@ def register_symptom(l=None) -> Symptom:
     print(symptom)
     return symptom
 
-def list_symptoms(l=None):
-    # Código para listar os sintomas cadastrados no sistema
+def list_symptoms(l=None, string=None) -> int:
     if l is None:
         # Código para ler os dados do arquivo JSON
         with open('data.json', 'r') as f:
@@ -1447,9 +1447,13 @@ def list_symptoms(l=None):
     # Verifica se há sintomas cadastrados
     if len(data['symptoms']) == 0:
         print("\nNão há sintomas cadastrados.")
-        return
+        return None
 
     # Imprime os sintomas cadastrados
+    if string is None:
+        print("\nSintomas cadastrados:")
+    else:
+        print(string)
     for i, symptom in enumerate(data['symptoms']):
         print(f"{i+1}. {Symptom(symptom['name'], symptom['date'])}")
 
@@ -1514,14 +1518,90 @@ def update_symptom(l=None) -> list[Symptom]:
         return data['symptoms']
         
 def delete_symptom():
-    pass
+    # Código para excluir um sintoma cadastrado no sistema
+    choosed_symptom = choose_symptom()
+
+    if choosed_symptom is not None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+
+        # Cria um novo objeto Symptom e chama o método delete
+        symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['date'])
+        symptom.delete()
+
+        # Remove o sintoma do arquivo JSON
+        data['symptoms'].pop(choosed_symptom)
+
+        print("\nSintoma excluído com sucesso.")
+        print(symptom)
 
 # ------ Funçõoes para manipular os dados de doenças ------
 def manage_diseases():
-    pass
+    # Código para gerenciar as doenças
+    print("\nMenu de opções para doenças:")
+    print("1. Cadastrar doença")
+    print("2. Listar doenças")
+    print("3. Atualizar doença")
+    print("4. Excluir doença")
+    print("5. Voltar ao menu principal")
 
-def register_disease():
-    pass
+    option = input("\nEscolha uma opção: ")
+
+    if option == "1":
+        # Chama a função para cadastrar uma doença
+        register_disease()
+    elif option == "2":
+        # Chama a função para listar as doenças
+        list_diseases()
+    elif option == "3":
+        # Chama a função para atualizar uma doença
+        update_disease()
+    elif option == "4":
+        # Chama a função para excluir uma doença
+        delete_disease()
+    elif option == "5":
+        # Volta ao menu principal
+        return
+    else:
+        print("\nOpção inválida. Tente novamente.")
+        manage_diseases()
+
+def register_disease(l=None) -> Disease:
+    # Código para cadastrar uma doença
+    name = input("Insira o nome da doença: ")
+
+    symptoms = []
+    # Lê os sintomas da doença
+    while True:
+        print("\n1. Adicionar sintoma cadastrado")
+        print("2. Cadastrar novo sintoma")
+        print("3. Visualizar sintomas adicionados")
+        print("4. Editar sintomas adicionados")
+        print("5. Remover sintomas adicionados")
+        print("6. Terminar adição de sintomas")
+
+        option = input("\nEscolha uma opção: ")
+
+        if option == "1":
+            # Chama a função para escolher um sintoma cadastrado
+            choosed_symptom = choose_symptom()
+            if choosed_symptom is not None:
+                # Código para ler os dados do arquivo JSON
+                with open('data.json', 'r') as f:
+                    data = json.load(f)
+                
+                symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['date'])
+                symptoms.append(symptom)
+                print("\nSintoma {} adicionado com sucesso.".format(symptom.name))
+        elif option == "2":
+            # Cadastra um novo sintoma
+            symptom = register_symptom()
+            symptoms.append(symptom.__dict__())
+            print("\nSintoma {} adicionado com sucesso.".format(symptom.name))
+        elif option == "3":
+            # Imprime os sintomas adicionados
+            list_symptoms(symptoms, "\nSintomas adicionados:")
 
 def list_diseases():
     pass
