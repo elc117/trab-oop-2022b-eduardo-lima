@@ -1201,18 +1201,15 @@ def register_prescription() -> Prescription:
             # Remove os medicamentos adicionados
             option = choose_medicine(medicines, "\nMedicamentos adicionados:")
             if option is not None:
-                option_exclude = input("\nDeseja remover o medicamento {} do cadastro também? (s/n): ".format(medicines[option]['name']))
-                if option_exclude == "s":
-                    confirm = input("\nTem certeza que deseja remover o medicamento {} do cadastro? (s/n): ".format(medicines[option]['name']))
+                option_exclusion = input("\nDeseja remover o medicamento {} do cadastro também? (s/n): ".format(medicines[option]['name']))
+                if option_exclusion == "s":
+                    confirm = input("\nTem certeza que deseja remover o medicamento {} do cadastro? (sim/n): ".format(medicines[option]['name']))
                     if confirm == "sim":
                         # Remove o medicamento do cadastro
                         Medicine(medicines[option]['name'], medicines[option]['qnt'], medicines[option]['un'], medicines[option]['interval'], medicines[option]['duration'], medicines[option]['condition']).delete()
                         print("\nMedicamento removido do cadastro com sucesso!")
                     medicines.pop(option)
-                else:
-                    # Remove o medicamento apenas da receita
-                    medicines.pop(option)
-                print("\nMedicamento removido da receita com sucesso!")
+                    print("\nMedicamento removido da receita com sucesso!")
         elif option == "6":
             # Finaliza o cadastro da receita
             break
@@ -1602,9 +1599,56 @@ def register_disease(l=None) -> Disease:
         elif option == "3":
             # Imprime os sintomas adicionados
             list_symptoms(symptoms, "\nSintomas adicionados:")
+        elif option == "4":
+            # Edita os sintomas adicionados
+            symptoms = update_symptom(symptoms)
+        elif option == "5":
+            # Remove um sintoma adicionado
+            choosed_symptom = choose_symptom(symptoms, "\nSintomas adicionados:")
+            if choosed_symptom is not None:
+                option_exclusion = input("\nDeseja realmente excluir o sintoma {}? (s/n): ".format(symptoms[choosed_symptom]['name']))
+                if option_exclusion == "s":
+                    confirmation = input("Tem certeza que deseja excluir o sintoma {} do cadastro? (sim/n): ".format(symptoms[choosed_symptom]['name']))
+                    if confirmation == "sim":
+                        # Remove o sintoma do cadastro
+                        Symptom(symptoms[choosed_symptom]['name'], symptoms[choosed_symptom]['date']).delete()
+                        print("\nSintoma excluído do cadastro com sucesso!".format(symptoms[choosed_symptom]['name']))
+                    symptoms.pop(choosed_symptom)
+                    print("\nSintoma removido da doença com sucesso!")
+        elif option == "6":
+            # Finaliza a adição de sintomas
+            break
+        else:
+            print("\nOpção inválida.")
+    
+    date = input("Insira a data de início da doença: ")
 
-def list_diseases():
-    pass
+    # Cria um objeto da classe Disease
+    disease = Disease(name, symptoms, date)
+    disease.create()
+    print("\nDoença cadastrada com sucesso!")
+    print(disease)
+            
+def list_diseases(l=None, string="\nDoenças cadastradas:"):
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['diseases'] = l
+    
+    # Verifica se há doenças cadastradas
+    if len(data['diseases']) == 0:
+        print("\nNão há doenças cadastradas.")
+        retrun None
+    
+
+    # Imprime as doenças cadastradas
+    print(string)
+    for i, disease in enumerate(data['diseases']):
+        print(f"")
+        # Parei aqui
 
 def choose_disease():
     pass
