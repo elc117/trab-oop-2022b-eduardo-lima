@@ -39,7 +39,7 @@ class Professional(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
         return self
 
@@ -81,7 +81,7 @@ class Professional(Object):
                 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -98,7 +98,7 @@ class Professional(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -139,7 +139,7 @@ class Medicine(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -183,7 +183,7 @@ class Medicine(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -200,7 +200,7 @@ class Medicine(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -233,7 +233,7 @@ class Prescription(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -273,7 +273,7 @@ class Prescription(Object):
                 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -290,7 +290,7 @@ class Prescription(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -323,7 +323,7 @@ class Symptom(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
             
@@ -359,7 +359,7 @@ class Symptom(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -376,7 +376,7 @@ class Symptom(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -404,7 +404,7 @@ class Disease(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -442,7 +442,7 @@ class Disease(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -459,7 +459,7 @@ class Disease(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -489,7 +489,7 @@ class Exam(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -520,7 +520,7 @@ class Exam(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -537,7 +537,7 @@ class Exam(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -569,7 +569,7 @@ class Consultation(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -600,7 +600,7 @@ class Consultation(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
               
@@ -617,7 +617,7 @@ class Consultation(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -658,7 +658,7 @@ class Patient(Object):
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -688,7 +688,7 @@ class Patient(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
         
         return self
     
@@ -705,7 +705,7 @@ class Patient(Object):
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
 
     def __dict__(self):
         return {
@@ -739,7 +739,7 @@ def main():
             data = json.load(f)
         except json.decoder.JSONDecodeError:
             data = {}
-            json.dump(data, f)
+            json.dump(data, f, indent=4)
     
     # Verifica se todas as chaves necessárias existem no arquivo JSON
     if 'professionals' not in data:
@@ -761,7 +761,7 @@ def main():
     
     # Código para escrever os dados de volta para o arquivo JSON
     with open('data.json', 'w') as f:
-        json.dump(data, f)
+        json.dump(data, f, indent=4)
 
     while True:
         print("\nMenu de opções:")
@@ -1416,7 +1416,7 @@ def manage_symptoms():
         print("\nOpção inválida. Tente novamente.")
         manage_symptoms()    
 
-def register_symptom(l=None) -> Symptom:
+def register_symptom() -> Symptom:
     # Código para cadastrar um novo sintoma
     name = input("Digite o nome do sintoma: ")
     date = input("Digite a data em que o sintoma começou: ")
@@ -1465,14 +1465,14 @@ def choose_symptom(l=None,string="\nSintomas cadastrados:") -> int:
         return None
 
     # Imprime os sintomas cadastrados
-    list_symptoms(data, string)
+    list_symptoms(l, string)
 
     # Lê o índice do sintoma escolhido
-    option = input("\nEscolha um sintoma: ")
+    choosed_symptom = input("\nEscolha um sintoma: ")
 
     # Verifica se o índice é válido
-    if option.isnumeric() and 1 <= int(option) <= len(data['symptoms']):
-        return int(option) - 1
+    if choosed_symptom.isnumeric() and 1 <= int(choosed_symptom) <= len(data['symptoms']):
+        return int(choosed_symptom) - 1
     else:
         print("\nOpção inválida. Tente novamente.")
         return choose_symptom(l, string)
@@ -1508,24 +1508,27 @@ def update_symptom(l=None) -> list[Symptom]:
         print(symptom)
         return data['symptoms']
         
-def delete_symptom():
+def delete_symptom(l=None):
     # Código para excluir um sintoma cadastrado no sistema
     choosed_symptom = choose_symptom()
 
     if choosed_symptom is not None:
-        # Código para ler os dados do arquivo JSON
-        with open('data.json', 'r') as f:
-            data = json.load(f)
+        if l is None:
+            # Código para ler os dados do arquivo JSON
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['symptoms'] = l
 
         # Cria um novo objeto Symptom e chama o método delete
         symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['date'])
         symptom.delete()
 
-        # Remove o sintoma do arquivo JSON
+        # Remove o sintoma da lista de sintomas
         data['symptoms'].pop(choosed_symptom)
 
         print("\nSintoma excluído com sucesso.")
-        print(symptom)
 
 # ------ Funçõoes para manipular os dados de doenças ------
 def manage_diseases():
@@ -1709,7 +1712,7 @@ def update_disease(l=None) -> list[Disease]:
                         print("\nSintoma adicionado com sucesso!")
                 elif option == "2":
                     # Cadastra um novo sintoma
-                    register_symptom(symptoms)
+                    symptoms.append(register_symptom())
                 elif option == "3":
                     if len(symptoms) == 0:
                         print("\nNão há sintomas na doença.")
@@ -1782,26 +1785,157 @@ def delete_disease(l=None) -> list[Disease]:
             data['diseases'].pop(choosed_disease)
         print("\nDoença deletada com sucesso!")
         return data['diseases']
-    
 
 # ------ Funçõoes para manipular os dados de exames ------
 def manage_exams():
-    pass
+    # Código para gerenciar os exames
+    print("\nMenu de opções para exames:")
+    print("1. Cadastrar novo exame")
+    print("2. Listar exames")
+    print("3. Atualizar exame")
+    print("4. Excluir exame")
+    print("5. Voltar ao menu principal")
 
-def register_exam():
-    pass
+    option = input("\nEscolha uma opção: ")
 
-def list_exams():
-    pass
+    if option == "1":
+        # Chama a função para cadastrar um novo exame
+        register_exam()
+    elif option == "2":
+        # Chama a função para listar os exames
+        list_exams()
+    elif option == "3":
+        # Chama a função para atualizar um exame
+        update_exam()
+    elif option == "4":
+        # Chama a função para excluir um exame
+        delete_exam()
+    elif option == "5":
+        # Volta ao menu principal
+        return
+    else:
+        print("\nOpção inválida.")
+        manage_exams()
 
-def choose_exam():
-    pass
+def register_exam() -> Exam:
+    # Código para cadastrar um novo exame
+    name = input("Insira o nome do exame: ")
+    results = input("Insira os resultados do exame: ")
+    professional = input("Insira o nome do profissional que solicitou o exame: ")
+    date = input("Insira a data do exame (DD/MM/AAAA): ")
 
-def update_exam():
-    pass
+    # Cria um objeto do tipo Exame
+    exam = Exam(name, results, professional, date).create()
 
-def delete_exam():
-    pass
+    print("\nExame cadastrado com sucesso!")
+    print(exam)
+    return exam
+
+def list_exams(l=None, string="Exames cadastrados:"):
+    # Código para listar os exames cadastrados
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['exams'] = l
+
+    # Verifica se há exames cadastrados
+    if len(data['exams']) == 0:
+        print("\nNão há exames cadastrados.")
+        return None
+    
+    # Imprime os exames cadastrados
+    print(string)
+    for i, exam in enumerate(data['exams']):
+        print(f"{i+1}. {Exam(exam['name'], exam['results'], exam['professional'], exam['date'])}")
+
+def choose_exam(l=None, string="Exames cadastrados:") -> int:
+    # Código para escolher um exame
+    if l is None:
+        # Código para ler os dados do arquivo JSON
+        with open('data.json', 'r') as f:
+            data = json.load(f)
+    else:
+        data = {}
+        data['exams'] = l
+
+    # Verifica se há exames cadastrados
+    if len(data['exams']) == 0:
+        return None
+
+    # Imprime os exames cadastrados
+    list_exams(l, string)
+
+    # Lê o índice do exame escolhido
+    choosed_exam = input("Escolha um exame: ")
+
+    # Verifica se o usuário escolheu um exame válido
+    if choosed_exam.isnumeric() and int(choosed_exam) > 0 and int(choosed_exam) <= len(data['exams']):
+        return int(choosed_exam) - 1
+    else:
+        print("\nExame inválido. Tente novamente.")
+        return choose_exam(l, string)
+
+def update_exam(l=None) -> list[Symptom]:
+    # Código para atualizar um exame cadastrado
+    choosed_exam = choose_exam(l)
+
+    if choosed_exam is not None:
+        if l is None:
+            # Código para ler os dados do arquivo JSON
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['exams'] = l
+
+        # Lê os dados do exame
+        name = input("Insira o nome do exame (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['name']))
+        if name == "":
+            name = None
+        results = input("Insira os resultados do exame (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['results']))
+        if results == "":
+            results = None
+        professional = input("Insira o nome do profissional que solicitou o exame (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['professional']))
+        if professional == "":
+            professional = None
+        date = input("Insira a data do exame (DD/MM/AAAA) (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['date']))
+        if date == "":
+            date = None
+        
+        # Cria um objeto do tipo Exame
+        exam = Exam(name, results, professional, date).update(data['exams'][choosed_exam])
+        exam = exam.update(name, results, professional, date)
+
+        data['exams'][choosed_exam] = exam.__dict__()
+
+        print("\nExame atualizado com sucesso!")
+        print(exam)
+        return data['exams']
+
+def delete_exam(l=None):
+    # Código para excluir um exame cadastrado
+    choosed_exam = choose_exam(l)
+
+    if choosed_exam is not None:
+        # Código para ler os dados do arquivo JSON
+        if l is None:
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+        else:
+            data = {}
+            data['exams'] = l
+
+        # Cria um objeto do tipo Exame
+        exam = Exam(data['exams'][choosed_exam]['name'], data['exams'][choosed_exam]['results'], data['exams'][choosed_exam]['professional'], data['exams'][choosed_exam]['date'])
+        exam.delete()
+
+        # Remove o exame da lista de exames
+        data['exams'].pop(choosed_exam)
+
+        print("\nExame excluído com sucesso!")
 
 # ------ Funçõoes para manipular os dados de consultas ------
 def manage_consultations():
