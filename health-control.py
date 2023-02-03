@@ -35,7 +35,7 @@ class Professional(Object):
             data = json.load(f)
         
         # Código para adicionar um novo profissional aos dados
-        data['professionals'].append(self.__dict__)
+        data['professionals'].append(self.__dict__())
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -76,7 +76,7 @@ class Professional(Object):
         for i, professional in enumerate(data['professionals']):
             if professional['name'] == self.name and professional['specialty'] == self.specialty and professional['city'] == self.city:
                 self = Professional(new_name, new_specialty, new_city, new_phone)
-                data['professionals'][i] = self.__dict__
+                data['professionals'][i] = self.__dict__()
                 print('Professional updated successfully!')
                 
         # Código para escrever os dados de volta para o arquivo JSON
@@ -135,7 +135,7 @@ class Medicine(Object):
             data = json.load(f)
         
         # Código para adicionar um novo medicamento aos dados
-        data['medicines'].append(self.__dict__)
+        data['medicines'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -179,7 +179,7 @@ class Medicine(Object):
         for i, medicine in enumerate(data['medicines']):
             if medicine['name'] == self.name and medicine['qnt'] == self.qnt and medicine['un'] == self.un and medicine['interval'] == self.interval and medicine['duration'] == self.duration and medicine['condition'] == self.condition:
                 self = Medicine(new_name, new_qnt, new_un, new_interval, new_duration, new_condition)
-                data['medicines'][i] = self.__dict__
+                data['medicines'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -229,7 +229,7 @@ class Prescription(Object):
             data = json.load(f)
         
         # Código para adicionar uma nova receita aos dados
-        data['prescriptions'].append(self.__dict__)
+        data['prescriptions'].append(self.__dict__())
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -251,6 +251,8 @@ class Prescription(Object):
         return None
     
     def update(self, new_professional=None, new_patient=None, new_medicines=None, new_date=None):
+        if new_professional == None == new_patient == new_medicines == new_date:
+            return self
         if new_professional is None:
             new_professional = self.professional
         if new_patient is None:
@@ -267,9 +269,9 @@ class Prescription(Object):
         # Código para procurar uma receita com o nome do paciente especificado
         # e atualizar os dados da receita
         for i, prescription in enumerate(data['prescriptions']):
-            if prescription['patient'] == self.patient:
+            if prescription['professional'] == self.professional and prescription['patient'] == self.patient and prescription['date'] == self.date:
                 self = Prescription(new_professional, new_patient, new_medicines, new_date)
-                data['prescriptions'][i] = self.__dict__
+                data['prescriptions'][i] = self.__dict__()
                 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -319,7 +321,7 @@ class Symptom(Object):
             data = json.load(f)
         
         # Código para adicionar um novo sintoma aos dados
-        data['symptoms'].append(self.__dict__)
+        data['symptoms'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -355,7 +357,7 @@ class Symptom(Object):
         for i, symptom in enumerate(data['symptoms']):
             if symptom['name'] == self.name:
                 self = Symptom(new_name, new_date)
-                data['symptoms'][i] = self.__dict__
+                data['symptoms'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -400,7 +402,7 @@ class Disease(Object):
             data = json.load(f)
 
         # Código para adicionar uma nova doença aos dados
-        data['diseases'].append(self.__dict__)
+        data['diseases'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -438,7 +440,7 @@ class Disease(Object):
         for i, disease in enumerate(data['diseases']):
             if disease['name'] == self.name:
                 self = Disease(new_name, new_symptoms, new_date)
-                data['diseases'][i] = self.__dict__
+                data['diseases'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -469,12 +471,16 @@ class Disease(Object):
         }
 
     def __str__(self):
-        return f'{self.name} - {self.symptoms} - {self.date}'
+        s = f'{self.name} - {self.date}\n'
+        for symptom in self.symptoms:
+            s += f"{symptom['name']} - {symptom['date']}\n"
+        return s
 
 # Classe para representar um exame
 class Exam(Object):
-    def __init__(self, name, results, professional, date):
+    def __init__(self, name, patient, results, professional, date):
         self.name = name
+        self.patient = patient
         self.results = results
         self.professional = professional
         self.date = date
@@ -485,7 +491,7 @@ class Exam(Object):
             data = json.load(f)
         
         # Código para adicionar um novo exame aos dados
-        data['exams'].append(self.__dict__)
+        data['exams'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -500,13 +506,24 @@ class Exam(Object):
         
         # Código para procurar um exame com o nome especificado
         for exam in data['exams']:
-            if exam['name'] == self.name:
+            if exam['name'] == self.name and exam['patient'] == self.patient and exam['professional'] == self.professional and exam['date'] == self.date:
                 return exam
         
         # Caso o exame não seja encontrado, retornar None
         return None
     
-    def update(self, new_name=None, new_results=None, new_professional=None, new_date=None):
+    def update(self, new_name=None, new_patient=None, new_results=None, new_professional=None, new_date=None):
+        if new_name is None:
+            new_name = self.name
+        if new_patient is None:
+            new_patient = self.patient
+        if new_results is None:
+            new_results = self.results
+        if new_professional is None:
+            new_professional = self.professional
+        if new_date is None:
+            new_date = self.date
+
         # Código para atualizar um exame existente no sistema
         with open('data.json', 'r') as f:
             data = json.load(f)
@@ -515,8 +532,8 @@ class Exam(Object):
         # e atualizar os dados do exame
         for i, exam in enumerate(data['exams']):
             if exam['name'] == self.name:
-                self = Exam(new_name, new_results, new_professional, new_date)
-                data['exams'][i] = self.__dict__
+                self = Exam(new_name, new_patient, new_results, new_professional, new_date)
+                data['exams'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -532,7 +549,7 @@ class Exam(Object):
         # Código para procurar um exame com o nome especificado
         # e excluir o exame dos dados
         for i, exam in enumerate(data['exams']):
-            if exam['name'] == self.name:
+            if exam['name'] == self.name and exam['patient'] == self.patient and exam['professional'] == self.professional and exam['date'] == self.date:
                 del data['exams'][i]
         
         # Código para escrever os dados de volta para o arquivo JSON
@@ -542,22 +559,22 @@ class Exam(Object):
     def __dict__(self):
         return {
             'name': self.name,
+            'patient': self.patient,
             'results': self.results,
             'professional': self.professional,
             'date': self.date
         }
 
     def __str__(self):
-        return f'{self.name} - {self.results} - {self.professional} - {self.date}'
+        return f'{self.name} - {self.patient} - {self.results} - {self.professional} - {self.date}'
 
 # Classe para representar uma consulta
 class Consultation(Object):
-    def __init__(self, professional, patient, symptoms, diagnose, exams, date):
+    def __init__(self, professional, patient, symptoms, diagnose, date):
         self.professional = professional
         self.patient = patient
         self.symptoms = symptoms
         self.diagnose = diagnose
-        self.exams = exams
         self.date = date
     
     def create(self):
@@ -566,7 +583,7 @@ class Consultation(Object):
             data = json.load(f)
         
         # Código para adicionar uma nova consulta aos dados
-        data['consultations'].append(self.__dict__)
+        data['consultations'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -587,17 +604,28 @@ class Consultation(Object):
         # Caso a consulta não seja encontrada, retornar None
         return None
     
-    def update(self, new_professional=None, new_symptoms=None, new_diagnose=None, new_exams=None, new_date=None):
+    def update(self, new_professional=None, new_patient=None, new_symptoms=None, new_diagnose=None, new_date=None):
+        if new_professional is None:
+            new_professional = self.professional
+        if new_patient is None:
+            new_patient = self.patient
+        if new_symptoms is None:
+            new_symptoms = self.symptoms
+        if new_diagnose is None:
+            new_diagnose = self.diagnose
+        if new_date is None:
+            new_date = self.date
+        
         # Código para atualizar uma consulta existente no sistema
         with open('data.json', 'r') as f:
             data = json.load(f)
-        
+
         # Código para procurar uma consulta com o nome do paciente especificado
         # e atualizar os dados da consulta
         for i, consultation in enumerate(data['consultations']):
             if consultation['professional'] == self.patient and consultation['data'] == self.data:
-                self = Consultation(new_professional, new_symptoms, new_diagnose, new_exams, new_date)
-                data['consultations'][i] = self.__dict__
+                self = Consultation(new_professional, new_symptoms, new_diagnose, new_date)
+                data['consultations'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -613,7 +641,7 @@ class Consultation(Object):
         # Código para procurar uma consulta com o nome do paciente especificado
         # e excluir a consulta dos dados
         for i, consultation in enumerate(data['consultations']):
-            if consultation['professional'] == self.patient and consultation['data'] == self.data:
+            if consultation['professional'] == self.professional and consultation['patient'] == self.patient and consultation['date'] == self.date:
                 del data['consultations'][i]
         
         # Código para escrever os dados de volta para o arquivo JSON
@@ -623,14 +651,17 @@ class Consultation(Object):
     def __dict__(self):
         return {
             'professional': self.professional,
+            'patient': self.patient,
             'symptoms': self.symptoms,
             'diagnose': self.diagnose,
-            'exams': self.exams,
             'date': self.date
         }
 
     def __str__(self):
-        return f'{self.professional} - {self.symptoms} - {self.diagnose} - {self.exams} - {self.date}'
+        s = f'{self.professional} - {self.date} - {self.diagnose}\n'
+        for symptom in self.symptoms:
+            s += f"{symptom['name']} - {symptom['date']}\n"
+        return s
 
 # Classe para representar um paciente
 class Patient(Object):
@@ -639,10 +670,11 @@ class Patient(Object):
 
     professionals = []
     medicines = []
-    perscriptions = []
+    prescriptions = []
     symptoms = []
     diseases = []
     exams = []
+    consultations = []
 
     def __init__(self, name, birth_date, gender):
         self.name = name
@@ -655,7 +687,7 @@ class Patient(Object):
             data = json.load(f)
         
         # Código para adicionar um novo paciente aos dados
-        data['patients'].append(self.__dict__)
+        data['patients'].append(self.__dict__())
 
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -676,7 +708,14 @@ class Patient(Object):
         # Caso o paciente não seja encontrado, retornar None
         return None
     
-    def update(self):
+    def update(self, new_name=None, new_birth_date=None, new_gender=None):
+        if new_name is None:
+            new_name = self.name
+        if new_birth_date is None:
+            new_birth_date = self.birth_date
+        if new_gender is None:
+            new_gender = self.gender
+        
         # Código para atualizar um paciente existente no sistema
         with open('data.json', 'r') as f:
             data = json.load(f)
@@ -684,8 +723,8 @@ class Patient(Object):
         # Código para procurar um paciente com o nome especificado
         # e atualizar os dados do paciente
         for i, patient in enumerate(data['patients']):
-            if patient['name'] == self.name:
-                data['patients'][i] = self.__dict__
+            if patient['name'] == self.name and self.birth_date == patient['birth_date'] and self.gender == patient['gender']:
+                data['patients'][i] = self.__dict__()
         
         # Código para escrever os dados de volta para o arquivo JSON
         with open('data.json', 'w') as f:
@@ -717,10 +756,11 @@ class Patient(Object):
             'height': self.height,
             'professionals': self.professionals,
             'medicines': self.medicines,
-            'perscriptions': self.perscriptions,
+            'prescriptions': self.prescriptions,
             'symptoms': self.symptoms,
             'diseases': self.diseases,
-            'exams': self.exams
+            'exams': self.exams,
+            'consultations': self.consultations
         }
 
     def __str__(self):
@@ -765,6 +805,7 @@ def main():
         json.dump(data, f, indent=4)
 
     while True:
+        scan_and_update()
         print("\nMenu de opções:")
         print("1. Gerenciar profissionais de saúde")
         print("2. Gerenciar medicamentos")
@@ -806,6 +847,7 @@ def main():
             break
         else:
             print("Opção inválida. Tente novamente.")
+        
 
 # ------ Funções para manipular os dados de profissionais de saúde ------
 def manage_professionals():
@@ -1224,7 +1266,7 @@ def register_prescription() -> Prescription:
     print(prescription)
     return prescription
 
-def list_prescriptions(l=None):
+def list_prescriptions(l=None, string="\nReceitas cadastradas:"):
     if l is None:
         # Código para ler os dados do arquivo JSON
         with open('data.json', 'r') as f:
@@ -1239,7 +1281,7 @@ def list_prescriptions(l=None):
         return
     
     # Imprime as receitas cadastradas
-    print("\nReceitas cadastradas:")
+    print(string)
     for i, prescription in enumerate(data['prescriptions']):
         print(f"{i+1}. {Prescription(prescription['professional'], prescription['patient'], prescription['medicines'], prescription['date'])}")
     
@@ -1341,7 +1383,6 @@ def update_prescription(l=None) -> list[Prescription]:
                     print("\nOpção inválida.")
         else:
             medicines = None
-        
         
         # Atualiza os dados da receita
         prescription = Prescription(data['prescriptions'][choosed_prescription]['professional'], data['prescriptions'][choosed_prescription]['patient'], data['prescriptions'][choosed_prescription]['medicines'], data['prescriptions'][choosed_prescription]['date'])
@@ -1588,7 +1629,7 @@ def register_disease(l=None) -> Disease:
                     data = json.load(f)
                 
                 symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['date'])
-                symptoms.append(symptom)
+                symptoms.append(symptom.__dict__())
                 print("\nSintoma {} adicionado com sucesso.".format(symptom.name))
         elif option == "2":
             # Cadastra um novo sintoma
@@ -1662,7 +1703,8 @@ def choose_disease(l=None,string="\nDoenças cadastradas:") -> int:
         return None
     
     # Imprime as doenças cadastradas
-    list_diseases(data, string)
+    list_diseases(l, string)
+
 
     # Lê o indice da doença escolhida
     choosed_disease = input("\nEscolha uma doença: ")
@@ -1672,7 +1714,7 @@ def choose_disease(l=None,string="\nDoenças cadastradas:") -> int:
         return int(choosed_disease) - 1
     else:
         print("\nOpção inválida.")
-        return choose_disease(data, string)
+        return choose_disease(data['diseases'], string)
 
 def update_disease(l=None) -> list[Disease]:
     # Código para atualizar uma doença
@@ -1692,9 +1734,9 @@ def update_disease(l=None) -> list[Disease]:
         name = input("Insira o nome da doença (deixe em branco para manter o nome atual: {}): ".format(data['diseases'][choosed_disese]['name']))
         if name == "":
             name = None
+        symptoms = data['diseases'][choosed_disese]['symptoms']
         confirmation = input("Deseja alterar os sintomas da doença? (s/n): ")
         if confirmation == "s":
-            symptoms = data['diseases'][choosed_disese]['symptoms']
             while True:
                 print("\n1. Adicionar sintoma cadstrado")
                 print("2. Cadastrar novo sintoma")
@@ -1741,23 +1783,26 @@ def update_disease(l=None) -> list[Disease]:
             else:
                 symptoms = None
 
-            date = input("Insira a data da doença (deixe em branco para manter a data atual: {}): ".format(data['diseases'][choosed_disese]['date']))
-            
-            # Atualiza os dados da doença
-            disease = Disease(data['diseases'][choosed_disese]['name'], data['diseases'][choosed_disese]['symptoms'], data['diseases'][choosed_disese]['date'])
-            disease = disease.update(name, symptoms, date)
-
-            data['diseases'][choosed_disese] = disease.__dict__()
-
-            print("\nDoença atualizada com sucesso!")
-            print(disease)
-            return data['diseases']
         else:
-            print("\nDoença não atualizada.")
-            try:
-                return data['diseases']
-            except:
-                pass
+            print("Sinomas não alterados.")
+        
+        date = input("Insira a data da doença (deixe em branco para manter a data atual: {}): ".format(data['diseases'][choosed_disese]['date']))
+        if date == "":
+            date = None
+
+        # Atualiza os dados da doença
+        disease = Disease(data['diseases'][choosed_disese]['name'], data['diseases'][choosed_disese]['symptoms'], data['diseases'][choosed_disese]['date'])
+        disease = disease.update(name, symptoms, date)
+
+        data['diseases'][choosed_disese] = disease.__dict__()
+
+        print("\nDoença atualizada com sucesso!")
+        print(disease)
+        try:
+            return data['diseases']
+        except:
+            pass
+        
 
 def delete_disease(l=None) -> list[Disease]:
     # Código para deletar uma doença cadastrada
@@ -1822,12 +1867,13 @@ def manage_exams():
 def register_exam() -> Exam:
     # Código para cadastrar um novo exame
     name = input("Insira o nome do exame: ")
+    patient = input("Insira o nome do paciente: ")
     results = input("Insira os resultados do exame: ")
     professional = input("Insira o nome do profissional que solicitou o exame: ")
     date = input("Insira a data do exame (DD/MM/AAAA): ")
 
     # Cria um objeto do tipo Exame
-    exam = Exam(name, results, professional, date).create()
+    exam = Exam(name, patient, results, professional, date).create()
 
     print("\nExame cadastrado com sucesso!")
     print(exam)
@@ -1851,7 +1897,7 @@ def list_exams(l=None, string="Exames cadastrados:"):
     # Imprime os exames cadastrados
     print(string)
     for i, exam in enumerate(data['exams']):
-        print(f"{i+1}. {Exam(exam['name'], exam['results'], exam['professional'], exam['date'])}")
+        print(f"{i+1}. {Exam(exam['name'], exam['patient'], exam['results'], exam['professional'], exam['date'])}")
 
 def choose_exam(l=None, string="Exames cadastrados:") -> int:
     # Código para escolher um exame
@@ -1897,6 +1943,9 @@ def update_exam(l=None) -> list[Symptom]:
         name = input("Insira o nome do exame (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['name']))
         if name == "":
             name = None
+        patient = input("Insira o nome do paciente (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['patient']))
+        if patient == "":
+            patient = None
         results = input("Insira os resultados do exame (deixe em branco para manter o atual: {}): ".format(data['exams'][choosed_exam]['results']))
         if results == "":
             results = None
@@ -1908,8 +1957,8 @@ def update_exam(l=None) -> list[Symptom]:
             date = None
         
         # Cria um objeto do tipo Exame
-        exam = Exam(name, results, professional, date).update(data['exams'][choosed_exam])
-        exam = exam.update(name, results, professional, date)
+        exam = Exam(data['exams'][choosed_exam]['name'], data['exams'][choosed_exam]['patient'], data['exams'][choosed_exam]['results'], data['exams'][choosed_exam]['professional'], data['exams'][choosed_exam]['date'])
+        exam = exam.update(name, patient, results, professional, date)
 
         data['exams'][choosed_exam] = exam.__dict__()
 
@@ -1931,7 +1980,7 @@ def delete_exam(l=None):
             data['exams'] = l
 
         # Cria um objeto do tipo Exame
-        exam = Exam(data['exams'][choosed_exam]['name'], data['exams'][choosed_exam]['results'], data['exams'][choosed_exam]['professional'], data['exams'][choosed_exam]['date'])
+        exam = Exam(data['exams'][choosed_exam]['name'], data['exams'][choosed_exam]['patient'], data['exams'][choosed_exam]['results'], data['exams'][choosed_exam]['professional'], data['exams'][choosed_exam]['date'])
         exam.delete()
 
         # Remove o exame da lista de exames
@@ -1995,13 +2044,13 @@ def register_consultation() -> Consultation:
                 with open('data.json', 'r') as f:
                     data = json.load(f)
 
-                symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['description'])
-                symptoms.append(symptom.__dict__)
+                symptom = Symptom(data['symptoms'][choosed_symptom]['name'], data['symptoms'][choosed_symptom]['date'])
+                symptoms.append(symptom.__dict__())
                 print("\nSintoma adicionado com sucesso!")
         elif option == "2":
             # Cadastra um novo sintoma
             symptom = register_symptom()
-            symptoms.append(symptom.__dict__)
+            symptoms.append(symptom.__dict__())
             print("\nSintoma {} adicionado com sucesso!".format(symptom.name))
         elif option == "3":
             # Impressão dos sintomas adicionados
@@ -2018,7 +2067,7 @@ def register_consultation() -> Consultation:
                     confirm = input("Tem certeza? (sim/n): ")
                     if confirm == "sim":
                         # Remove o sintoma do cadastro
-                        Symptom(symptoms[choosed_symptom]['name'], symptoms[choosed_symptom]['description']).delete()
+                        Symptom(symptoms[choosed_symptom]['name'],symptoms[choosed_symptom]['date']).delete()
                         print("\nSintoma excluído do cadastro com sucesso!")
                     symptoms.pop(choosed_symptom)
                     print("\nSintoma removido da consulta com sucesso!")
@@ -2028,63 +2077,10 @@ def register_consultation() -> Consultation:
         else:
             print("\nOpção inválida. Tente novamente.")
         
-    diagnose = input("Insira o diagnóstico: ")
-
-    exams = []
-    while True:
-        print("\n1. Adicionar exame cadastrado:")
-        print("2. Cadastrar novo exame:")
-        print("3. Visualizar exames adicionados:")
-        print("4. Editar exames adicionados:")
-        print("5. Remover exames adicionados:")
-        print("6. Finalizar")
-
-        option = input("Escolha uma opção: ")
-
-        if option == "1":
-            # Adiciona um exame cadastrado
-            choosed_exam = choose_exam()
-            if choosed_exam is not None:
-                # Código para ler os dados do arquivo JSON
-                with open('data.json', 'r') as f:
-                    data = json.load(f)
-
-                exam = Exam(data['exams'][choosed_exam]['name'], data['exams'][choosed_exam]['description'])
-                exams.append(exam.__dict__)
-                print("\nExame adicionado com sucesso!")
-        elif option == "2":
-            # Cadastra um novo exame
-            exam = register_exam()
-            exams.append(exam.__dict__)
-            print("\nExame {} adicionado com sucesso!".format(exam.name))
-        elif option == "3":
-            # Impressão dos exames adicionados
-            list_exams(exams,string="\nExames adicionados:")
-        elif option == "4":
-            # Edição dos exames adicionados
-            exams = update_exam(exams)
-        elif option == "5":
-            # Remoção dos exames adicionados
-            choosed_exam = choose_exam(exams, string="\nExames adicionados:")
-            if choosed_exam is not None:
-                option_exclusion = input("Deseja realmente excluir o exame {}? (s/n): ".format(exams[choosed_exam]['name']))
-                if option_exclusion == "s":
-                    confirm = input("Tem certeza? (sim/n): ")
-                    if confirm == "sim":
-                        # Remove o exame do cadastro
-                        Exam(exams[choosed_exam]['name'], exams[choosed_exam]['description']).delete()
-                        print("\nExame excluído do cadastro com sucesso!")
-                    exams.pop(choosed_exam)
-                    print("\nExame removido da consulta com sucesso!")
-        elif option == "6":
-            # Finaliza a adição de exames
-            break
-        else:
-            print("\nOpção inválida. Tente novamente.")
-        
+    diagnose = input("Insira o diagnóstico: ")      
     date = input("Insira a data da consulta (DD/MM/AAAA): ")
 
-    consultation = Consultation(professional, patient, symptoms, diagnose, exams, date)
+    consultation = Consultation(professional, patient, symptoms, diagnose, date)
     consultation.create()
 
     print("\nConsulta cadastrada com sucesso!")
@@ -2109,7 +2105,7 @@ def list_consultations(l=None, string="\nConsultas cadastradas:"):
     # Impressão das consultas cadastradas
     print(string)
     for i in range(len(data['consultations'])):
-        print("{} - {}".format(i, data['consultations'][i]['professional']['name'], data['consultations'][i]['patient']['name'], data['consultations'][i]['date']))      
+        print("{}. {} - {} - {}".format(i+1, data['consultations'][i]['professional'], data['consultations'][i]['patient'], data['consultations'][i]['date']))      
 
 def choose_consultation(l=None, string="\nConsultas cadastradas:"):
     if l is None:
@@ -2126,17 +2122,17 @@ def choose_consultation(l=None, string="\nConsultas cadastradas:"):
         return None
     
     # Impressão das consultas cadastradas
-    list_consultations(data, string)
+    list_consultations(l, string)
 
     # Escolha da consulta
     choosed_consultation = input("Escolha uma consulta: ")
     
     # Verifica se a opção escolhida é válida
-    if choosed_consultation.isnumeric() and choosed_consultation >= 0 and choosed_consultation < len(data['consultations']):
+    if choosed_consultation.isnumeric() and int(choosed_consultation) > 0 and int(choosed_consultation) <= len(data['consultations']):
             return int(choosed_consultation) - 1
     else:
         print("\nOpção inválida. Tente novamente.")
-        return choose_consultation(data, string)
+        return choose_consultation(l, string)
 
 def update_consultation(l=None):
     # Código para atualizar os dados de uma consulta
@@ -2153,19 +2149,18 @@ def update_consultation(l=None):
             data['consultations'] = l
         
         # Lê os novos dados da consulta
-        professional = input("Insira o nome do profissional (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_consultation]['professional']))
+        professional = input("Insira o nome do profissional (deixe em branco para manter o valor atual: {}): ".format(data['consultations'][choosed_consultation]['professional']))
         if professional == "":
             professional = None
-        patient = input("Insira o nome do paciente (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_consultation]['patient']))
+        patient = input("Insira o nome do paciente (deixe em branco para manter o valor atual: {}): ".format(data['consultations'][choosed_consultation]['patient']))
         if patient == "":
             patient = None
         
+        symptoms = data['consultations'][choosed_consultation]['symptoms']
         confirmation = input("Deseja alterar os sintomas? (s/n): ")
-        if confirmation == "s":
-            symptoms = data['prescriptions'][choosed_consultation]['symptoms']
-            
+        if confirmation == "s":      
             while True:
-                print("1. Adicionar sintoma cadastrado")
+                print("\n1. Adicionar sintoma cadastrado")
                 print("2. Cadastrar novo sintoma")
                 print("3. Visualizar sintomas adicionados")
                 print("4. Remover sintoma adicionado")
@@ -2204,15 +2199,19 @@ def update_consultation(l=None):
                 else:
                     print("\nOpção inválida.")
 
-        date = input("Insira a data da receita (dd/mm/aaaa) (deixe em branco para manter o valor atual: {}): ".format(data['prescriptions'][choosed_consultation]['date']))
+        diagnose = input("Insira o diagnóstico (deixe em branco para manter o valor atual: {}): ".format(data['consultations'][choosed_consultation]['diagnose']))
+        if diagnose == "":
+            diagnose = None
+
+        date = input("Insira a data da receita (dd/mm/aaaa) (deixe em branco para manter o valor atual: {}): ".format(data['consultations'][choosed_consultation]['date']))
         if date == "":
             date = None
         
         # Atualiza os dados da consulta
-        consultation = Consultation(data['consultations'][choosed_consultation]['professional'], data['consultations'][choosed_consultation]['patient'], data['consultations'][choosed_consultation]['symptoms'], data['consultations'][choosed_consultation]['date'])
-        consultation.update(professional, patient, symptoms, date)
+        consultation = Consultation(data['consultations'][choosed_consultation]['professional'], data['consultations'][choosed_consultation]['patient'], data['consultations'][choosed_consultation]['symptoms'], data['consultations'][choosed_consultation]['diagnose'], data['consultations'][choosed_consultation]['date'])
+        consultation.update(professional, patient, symptoms, diagnose, date)
 
-        data['consultations'][choosed_consultation] = consultation.__dict__
+        data['consultations'][choosed_consultation] = consultation.__dict__()
 
         print("\nConsulta atualizada com sucesso!")
         print(consultation)
@@ -2227,7 +2226,7 @@ def update_consultation(l=None):
 def delete_consultation(l=None):
     # Código para deletar uma consulta
 
-    choosed_consultation = choose_consultation()
+    choosed_consultation = choose_consultation(l)
     
     if choosed_consultation is not None:
         if l is None:
@@ -2239,7 +2238,7 @@ def delete_consultation(l=None):
             data['consultations'] = l
         
         # Imprime a consulta escolhida
-        consultation = Consultation(data['consultations'][choosed_consultation]['professional'], data['consultations'][choosed_consultation]['patient'], data['consultations'][choosed_consultation]['symptoms'], data['consultations'][choosed_consultation]['date'])
+        consultation = Consultation(data['consultations'][choosed_consultation]['professional'], data['consultations'][choosed_consultation]['patient'], data['consultations'][choosed_consultation]['symptoms'], data['consultations'][choosed_consultation]['diagnose'], data['consultations'][choosed_consultation]['date'])
         print(f"Você deseja deletar a consulta abaixo?\n{consultation}")
         confirm = input("Digite 'sim' para confirmar: ")
         if confirm != "sim":
@@ -2261,9 +2260,10 @@ def manage_patients():
     print("2. Listar pacientes")
     print("3. Atualizar paciente")
     print("4. Excluir paciente")
-    print("5. Voltar ao menu principal")
+    print("5. Adicionar medidas")
+    print("6. Voltar ao menu principal")
 
-    option = input("Escolha uma opção: ")
+    option = input("\nEscolha uma opção: ")
 
     if option == "1":
         # Cadastra um novo paciente
@@ -2278,6 +2278,9 @@ def manage_patients():
         # Exclui um paciente
         delete_patient()
     elif option == "5":
+        # Adiciona medidas
+        add_patient_meassures()
+    elif option == "6":
         # Volta ao menu principal
         return
     else:
@@ -2368,7 +2371,7 @@ def update_patient(l=None):
         patient = Patient(data['patients'][choosed_patient]['name'], data['patients'][choosed_patient]['birth_date'], data['patients'][choosed_patient]['gender'])
         patient.update(name, birth_date, gender)
 
-        data['patients'][choosed_patient] = patient.__dict__
+        data['patients'][choosed_patient] = patient.__dict__()
 
         print("\nPaciente atualizado com sucesso!")
         print(patient)
@@ -2407,6 +2410,72 @@ def delete_patient(l=None):
             data['patients'].pop(choosed_patient)
         print("\nPaciente excluído com sucesso!")
         return data['patients']
+    
+def add_patient_meassures():
+    choosed_patient = choose_patient(string="\nEscolha o paciente:")
+    
+    if choosed_patient is not None:
+        print("\n1. Adicionar peso")
+        print("2. Adicionar altura")
+
+        option = input("\nEscolha uma opção: ")
+        if option in ["1", "2"]:
+            key = 'weight' if option == "1" else 'height'
+            value = float(input("\nInsira o valor: "))
+            date = input("Insira a data (dd/mm/aaaa):")
+            
+            with open('data.json', 'r') as f:
+                data = json.load(f)
+            
+            data['patients'][choosed_patient][key].append({'value': value, 'date': date})                
+        # Salva as alterações de volta ao arquivo data.json
+        with open('data.json', 'w') as f:
+            json.dump(data, f, indent=4)
+
+def scan_and_update():
+    # Carregar o arquivo data.json em um objeto python
+    with open('data.json', 'r') as f:
+        data = json.load(f)
+    
+    for patient in data['patients']:
+        patient_name = patient['name']
+
+        # Adiciona informações ao paciente
+        for prescription in data['prescriptions']:
+            if prescription['patient'] == patient_name:
+                if prescription not in patient['prescriptions']:
+                    patient['prescriptions'].append(prescription)
+                for medicine in prescription['medicines']:
+                    if medicine not in patient['medicines']:
+                        patient['medicines'].append(medicine)
+                if prescription['professional'] not in patient['professionals']:
+                    patient['professionals'].append(prescription['professionals'])            
+
+        for consultation in data['consultations']:
+            if consultation['patient'] == patient_name:
+                if consultation not in patient['consultations']:
+                    patient['consultations'].append(consultation)
+                if consultation['professional'] not in patient['professionals']:
+                    patient['professionals'].append(consultation['professional'])
+                if {'name': consultation['diagnose'], 'date': consultation['date'], 'symptoms': consultation['symptoms']} not in patient['diseases']:
+                    patient['diseases'].append({'name': consultation['diagnose'], 'date': consultation['date'], 'symptoms': consultation['symptoms']})
+                for symptom in consultation['symptoms']:
+                    if symptom not in patient['symptoms']:
+                        patient['symptoms'].append(symptom)
+                if consultation['professional'] not in patient['professionals']:
+                    patient['professionals'].append(consultation['professional'])
+
+        for exam in data['exams']:
+            if exam['patient'] == patient_name:
+                if exam not in patient['exams']:
+                    patient['exams'].append(exam)
+                if exam['professional'] not in patient['professionals']:
+                    patient['professionals'].append(exam['professional'])
+
+    # Salva as alterações de volta ao arquivo data.json
+    with open('data.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
 
 if __name__ == "__main__":
     main()

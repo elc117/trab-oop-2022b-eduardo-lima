@@ -1,5 +1,30 @@
 {
-    "professionals": [],
+    "professionals": [
+        {
+            "name": "Eduarda Dalcin Marques",
+            "specialty": "Cl\u00ednica Geral",
+            "city": "Santa Maria",
+            "phone": "55 55 99999-9999"
+        },
+        {
+            "name": "Maria Silva",
+            "specialty": "Dermatologista",
+            "city": "S\u00e3o Paulo",
+            "phone": "55 11 99999-9999"
+        },
+        {
+            "name": "Jo\u00e3o Oliveira",
+            "specialty": "Oftalmologista",
+            "city": "Rio de Janeiro",
+            "phone": "55 21 99999-9999"
+        },
+        {
+            "name": "Andr\u00e9 Avelino Costa Beber",
+            "specialty": "Dermatologista",
+            "city": "Santa Maria",
+            "phone": "55 55 11111-1111"
+        }
+    ],
     "medicines": [
         {
             "name": "Lisador",
@@ -27,9 +52,224 @@
             "date": "24/10/2022"
         }
     ],
-    "symptoms": [],
-    "diseases": [],
-    "exams": [],
-    "consultations": [],
-    "patients": []
+    "symptoms": [
+        {
+            "name": "Dor de garganta",
+            "date": "30/01/2023"
+        },
+        {
+            "name": "Tosse",
+            "date": "01/02/2023"
+        },
+        {
+            "name": "Nariz entupido",
+            "date": "31/01/2023"
+        },
+        {
+            "name": "Cansa\u00e7o",
+            "date": "01/02/2023"
+        }
+    ],
+    "diseases": [
+        {
+            "name": "Gripe",
+            "symptoms": [
+                {
+                    "name": "Dor de garganta",
+                    "date": "30/01/2023"
+                },
+                {
+                    "name": "Tosse",
+                    "date": "01/02/2023"
+                },
+                {
+                    "name": "Nariz entupido",
+                    "date": "31/01/2023"
+                },
+                {
+                    "name": "Cansa\u00e7o",
+                    "date": "01/02/2023"
+                }
+            ],
+            "date": "30/01/2023"
+        }
+    ],
+    "exams": [
+        {
+            "name": "Resson\u00e2ncia Magn\u00e9tica",
+            "patient": "Eduardo Machado de Lima",
+            "results": "Fratura na costela",
+            "professional": "Andr\u00e9 Avelino Costa Beber",
+            "date": "20/03/2020"
+        }
+    ],
+    "consultations": [
+        {
+            "professional": "Eduarda Dalcin Marques",
+            "patient": "Eduardo Machado de Lima",
+            "symptoms": [
+                {
+                    "name": "Dor de garganta",
+                    "date": "30/01/2023"
+                },
+                {
+                    "name": "Tosse",
+                    "date": "01/02/2023"
+                },
+                {
+                    "name": "Nariz entupido",
+                    "date": "31/01/2023"
+                },
+                {
+                    "name": "Cansa\u00e7o",
+                    "date": "01/02/2023"
+                }
+            ],
+            "diagnose": "Sinusite",
+            "date": "24/10/2022"
+        }
+    ],
+    "patients": [
+        {
+            "name": "Eduardo Machado de Lima",
+            "birth_date": "13/08/1997",
+            "gender": "M",
+            "weight": [
+                {
+                    "value": 71.2,
+                    "date": "26/01/2023"
+                },
+                {
+                    "value": 71.1,
+                    "date": "25/01/2023"
+                },
+                {
+                    "value": 71.6,
+                    "date": "23/01/2023"
+                },
+                {
+                    "value": 71,
+                    "date": "17/01/2023"
+                },
+                {
+                    "value": 70.3,
+                    "date": "10/01/2023"
+                }
+            ],
+            "height": [
+                {
+                    "value": 1.73,
+                    "date": "03/02/2023"
+                }
+            ],
+            "professionals": [
+                "Eduarda Dalcin Marques",
+                "Andr\u00e9 Avelino Costa Beber"
+            ],
+            "medicines": [
+                {
+                    "name": "Lisador",
+                    "qnt": "1",
+                    "un": "cx",
+                    "interval": "6",
+                    "duration": "5",
+                    "condition": "dor ou febre"
+                }
+            ],
+            "prescriptions": [
+                {
+                    "professional": "Eduarda Dalcin Marques",
+                    "patient": "Eduardo Machado de Lima",
+                    "medicines": [
+                        {
+                            "name": "Lisador",
+                            "qnt": "1",
+                            "un": "cx",
+                            "interval": "6",
+                            "duration": "5",
+                            "condition": "dor ou febre"
+                        }
+                    ],
+                    "date": "24/10/2022"
+                }
+            ],
+            "symptoms": [
+                {
+                    "name": "Dor de garganta",
+                    "date": "30/01/2023"
+                },
+                {
+                    "name": "Tosse",
+                    "date": "01/02/2023"
+                },
+                {
+                    "name": "Nariz entupido",
+                    "date": "31/01/2023"
+                },
+                {
+                    "name": "Cansa\u00e7o",
+                    "date": "01/02/2023"
+                }
+            ],
+            "diseases": [
+                {
+                    "name": "Sinusite",
+                    "date": "24/10/2022",
+                    "symptoms": [
+                        {
+                            "name": "Dor de garganta",
+                            "date": "30/01/2023"
+                        },
+                        {
+                            "name": "Tosse",
+                            "date": "01/02/2023"
+                        },
+                        {
+                            "name": "Nariz entupido",
+                            "date": "31/01/2023"
+                        },
+                        {
+                            "name": "Cansa\u00e7o",
+                            "date": "01/02/2023"
+                        }
+                    ]
+                }
+            ],
+            "exams": [
+                {
+                    "name": "Resson\u00e2ncia Magn\u00e9tica",
+                    "patient": "Eduardo Machado de Lima",
+                    "results": "Fratura na costela",
+                    "professional": "Andr\u00e9 Avelino Costa Beber",
+                    "date": "20/03/2020"
+                }
+            ],
+            "consultations": [
+                {
+                    "professional": "Eduarda Dalcin Marques",
+                    "patient": "Eduardo Machado de Lima",
+                    "symptoms": [
+                        {
+                            "name": "Dor de garganta",
+                            "date": "30/01/2023"
+                        },
+                        {
+                            "name": "Tosse",
+                            "date": "01/02/2023"
+                        },
+                        {
+                            "name": "Nariz entupido",
+                            "date": "31/01/2023"
+                        },
+                        {
+                            "name": "Cansa\u00e7o",
+                            "date": "01/02/2023"
+                        }
+                    ],
+                    "diagnose": "Sinusite",
+                    "date": "24/10/2022"
+                }
+            ]
+        }
+    ]
 }
